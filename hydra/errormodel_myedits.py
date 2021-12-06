@@ -17,11 +17,15 @@ ALPHA = 1/(4*np.pi*EPS0) * E**2/(HBAR * C)
 S_TO_P_LINEWIDTH = 19.6*MHZ # Linewidth of the S1/2 -> P1/2 transition in 171Yb
 
 DIST_ELECTRODE = 150e-6 # Assume typical distance to electrode for chips
-HEATING_FACTOR = 1/3 # 1/3 is typical for schemes such as the 2T MS gate or
-                     # Phase modulated gates.
+
+HEATING_FACTOR = 1/3 # 1/3 is typical for schemes such as the 2T MS gate or Phase modulated gates.
+                     
 GATE_TIME_COST = 1.25 # Increased gate time when using heating robust gates
-G_FACTOR_CHIP = 50.10 # Geometric factor for voltage noise found by numerically
-               # simulating chip geometries.
+
+#G_FACTOR_CHIP = 50.10 # Geometric factor for voltage noise found by 
+                      # numerically simulating chip geometries.
+
+G_FACTOR_CHIP = 70 # After talk with Sam 
 
 G_FACTOR_MACRO = 140
 
@@ -34,7 +38,7 @@ VIB_MODE_RADIAL_COM = 3
 
 
 # ------------------------------------------
-# General functiosn
+# General functions
 # ------------------------------------------
 
 def compute_tgate(nu, dzB, Om) :

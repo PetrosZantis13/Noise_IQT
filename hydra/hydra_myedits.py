@@ -128,7 +128,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.tableInfo.setRowCount(4)
         self.tableInfo.setColumnCount(2)
         self.tableInfo.setItem(0,0, QtWidgets.QTableWidgetItem("Fidelity"))
-        self.tableInfo.setItem(1,0, QtWidgets.QTableWidgetItem("Optimal nu"))
+        self.tableInfo.setItem(1,0, QtWidgets.QTableWidgetItem("Optimal Frequency"))
         self.tableInfo.setItem(2,0, QtWidgets.QTableWidgetItem("Gate Time"))
         self.tableInfo.setItem(3,0, QtWidgets.QTableWidgetItem("STR Heating Rate"))
 
@@ -397,15 +397,15 @@ class MainWindow(QtWidgets.QMainWindow):
         nuSE = 10**(self.sliderENoise.value()/10)
         SBa = 10**(self.sliderBAmbient.value()/10)
         SV = 10**(self.sliderVNoise.value()/10)
+        NuXY = self.sliderNuXY.value()/10*MHZ
+        nbar = 10**(self.sliderNbar.value()/10)
+        
         '''
         Petros's slider edits
         '''
         self.sliderVNoise.setValue(4* self.sliderENoise.value())  # check the exact relationship
-        
-        NuXY = self.sliderNuXY.value()/10*MHZ
-        nbar = 10**(self.sliderNbar.value()/10)
-        
         phi = self.sliderPhi.value()
+
 
         if include_amp_noise :
             chi = 10**(self.sliderChi.value()/10)
