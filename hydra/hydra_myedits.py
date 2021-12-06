@@ -24,6 +24,7 @@ SLDR_ID_CHI = 6
 SLDR_ID_SA = 7
 SLDR_ID_NBAR = 8
 SLDR_ID_SYMFLUC = 9
+SLDR_ID_PHI = 10
 
 CBOX_ARCH_ID_CHIP = 0
 CBOX_ARCH_ID_MACRO = 1
@@ -57,7 +58,7 @@ class Trace:
 
     curves = []
     errors = []
-    NU_C_LIST = np.linspace(100, 500, 100)*KHZ
+    NU_C_LIST = np.linspace(100, 800, 100)*KHZ
     hide = False
     update = False
     active = False
@@ -108,7 +109,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.radioBtnTraceHide.toggled.connect(lambda : self.trace_hide() )
 
         # Innitialize  Graph
-        self.NU_C_LIST = np.linspace(100, 500, 100)*KHZ
+        self.NU_C_LIST = np.linspace(100, 800, 100)*KHZ
         self.init_graph()
 
         # Innitialize all slider and their labels
@@ -282,6 +283,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.sliderNbar.setValue(int(data['slider']['nbar']*10))
         self.labelNbar.setText(str('%.2f'%(10**(data['slider']['nbar']))))
+        
+        self.sliderPhi.setValue(data['slider']['phi'])
+        self.labelPhi.setText(str(data['slider']['phi']))
 
         self.sliderSymFluc.setValue(int(data['slider']['symfluc']))
         self.labelSymFluc.setText(str(data['slider']['symfluc']))
@@ -363,9 +367,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.graphWidget.setLogMode(False, True)
 
         self.graphWidget.setLabel('left', 'Infidelity')
-        self.graphWidget.setLabel('bottom', 'Secular Frequency', 'KHz')
-        self.graphWidget.setXRange(100, 520, padding=0)
-        self.graphWidget.setYRange(-5, -1, padding=0.02)
+        self.graphWidget.setLabel('bottom', 'COM Secular Frequency', 'kHz')
+        self.graphWidget.setXRange(100, 820, padding=0)
+        self.graphWidget.setYRange(-4, 0, padding=0.02)
 
 
     def update_graph(self) :
@@ -393,8 +397,15 @@ class MainWindow(QtWidgets.QMainWindow):
         nuSE = 10**(self.sliderENoise.value()/10)
         SBa = 10**(self.sliderBAmbient.value()/10)
         SV = 10**(self.sliderVNoise.value()/10)
+        '''
+        Petros's slider edits
+        '''
+        self.sliderVNoise.setValue(4* self.sliderENoise.value())  # check the exact relationship
+        
         NuXY = self.sliderNuXY.value()/10*MHZ
         nbar = 10**(self.sliderNbar.value()/10)
+        
+        phi = self.sliderPhi.value()
 
         if include_amp_noise :
             chi = 10**(self.sliderChi.value()/10)
@@ -480,6 +491,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.sliderSymFluc.setMinimum(0)
         self.sliderSymFluc.setMaximum(100)
+        
+        self.sliderPhi.setMinimum(1)
+        self.sliderPhi.setMaximum(10)
 
         self.sliderGradient.valueChanged.connect(lambda : self.update_sldr_label(SLDR_ID_GRADIENT))
         self.sliderPower.valueChanged.connect(lambda : self.update_sldr_label(SLDR_ID_POWER))
@@ -491,6 +505,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.sliderSA.valueChanged.connect(lambda : self.update_sldr_label(SLDR_ID_SA))
         self.sliderNbar.valueChanged.connect(lambda : self.update_sldr_label(SLDR_ID_NBAR))
         self.sliderSymFluc.valueChanged.connect(lambda : self.update_sldr_label(SLDR_ID_SYMFLUC))
+        self.sliderPhi.valueChanged.connect(lambda : self.update_sldr_label(SLDR_ID_PHI))
 
         self.sliderFixNu.valueChanged.connect(lambda : self.update_graph())
 
@@ -540,6 +555,10 @@ class MainWindow(QtWidgets.QMainWindow):
         elif sldr_id is SLDR_ID_SYMFLUC :
             symfluc = self.sliderSymFluc.value()
             self.labelSymFluc.setText(str(symfluc))
+            
+        elif sldr_id is SLDR_ID_PHI :
+            phi = self.sliderPhi.value()
+            self.labelPhi.setText(str(phi))
 
         self.update_graph()
 

@@ -11,7 +11,8 @@
 		"chi" : -1.8,
 		"SA" : -12,
 		"nbar" : -1,
-		"symfluc" : 3
+		"symfluc" : 3,
+		"phi" : 1
 	},
 	"toggles" : 
 	{

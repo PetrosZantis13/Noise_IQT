@@ -285,8 +285,8 @@ def compute_total_errors(nu_c_list, Om, dzB, nuSE, SBa, SV, nu_XY, pulse_shaping
 
         SBtot += SBe
 
-        print("SBv = " + str(SBv))
-        print("SBe = " + str(SBe) + "\n")
+#         print("SBv = " + str(SBv))
+#         print("SBe = " + str(SBe) + "\n")
 
         # Compute decoherence time
         T2 = compute_T2(SBtot)
@@ -355,7 +355,7 @@ def optimizeFidelity(nu_c_list, err_list) :
 
     def opt_func(nu_c) :
         interp_func = interp1d(nu_c_list, err_list, kind='linear')
-        if nu_c >= 500*KHZ :
+        if nu_c >= 800*KHZ :
             return 1
         if nu_c <= 100*KHZ :
             return 1
@@ -363,7 +363,7 @@ def optimizeFidelity(nu_c_list, err_list) :
             return interp_func(nu_c)
 
     # Minimize errors
-    bnds = [100*KHZ, 500*KHZ]
+    bnds = [100*KHZ, 800*KHZ]
     res = minimize(opt_func, (300*KHZ), method='Nelder-Mead')#, bounds=bnds)
 
     err_min = res.fun

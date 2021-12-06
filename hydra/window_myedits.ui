@@ -283,6 +283,13 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QLabel" name="label_17">
+         <property name="text">
+          <string>phi :</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="layoutWidget">
@@ -374,6 +381,16 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QSlider" name="sliderPhi">
+         <property name="pageStep">
+          <number>1</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="layoutWidget">
@@ -430,6 +447,13 @@
        </item>
        <item>
         <widget class="QLabel" name="labelNbar">
+         <property name="text">
+          <string>TextLabel</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="labelPhi">
          <property name="text">
           <string>TextLabel</string>
          </property>
