@@ -1,0 +1,25 @@
+{
+	"version" : 1.1,
+    "slider" : 
+	{
+	    "dzB" : 50,
+	    "Om" : 50,
+	    "nuSE" : -4,
+	    "SBa" : -23,
+	    "SV" : -16,
+	    "nuXY" : 1.5,
+		"chi" : -1.8,
+		"SA" : -12,
+		"nbar" : -1,
+		"symfluc" : 3
+	},
+	"toggles" : 
+	{
+		"amp_noise" : false, 
+		"ccw_noise" : true, 
+		"sym_fluc" : false
+	},
+	"architecture" : 0,
+	"vnoise" : 0,
+	"vib_mode" : 0
+}
