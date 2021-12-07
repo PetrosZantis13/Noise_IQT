@@ -382,6 +382,9 @@ class MainWindow(QtWidgets.QMainWindow):
                 g_factor = em.G_FACTOR_MACRO
         else :
             g_factor = 0
+            
+#         print(str(self.comboBoxVNoise.currentIndex()))
+#         print(str(g_factor))
 
         vib_mode = self.comboBoxVibMode.currentIndex()
         include_amp_noise = self.radioBtnAmpNoise.isChecked()
@@ -418,6 +421,16 @@ class MainWindow(QtWidgets.QMainWindow):
         if include_symfluc_noise :
             sym_fluc = 2*np.pi* self.sliderSymFluc.value()
         else : sym_fluc = 0
+        
+        print()
+        print("dzB = " + str(dzB))
+        print("Om = " + str(Om))
+        print("nuSE = " + str(nuSE))
+        print("SV = " + str(SV))
+        print("NuXY = " + str(NuXY))
+        print("nbar = " + str(nbar))
+        print("SA = " + str(SA))
+        
 
         err_h, err_d, err_t, err_o, err_a = em.compute_total_errors(self.NU_C_LIST, Om, dzB, nuSE, SBa, SV, NuXY,
                                                 pulse_shaping = pulse_shaping, g_factor = g_factor,
