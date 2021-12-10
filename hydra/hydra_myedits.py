@@ -539,15 +539,15 @@ class MainWindow(QtWidgets.QMainWindow):
 
         elif sldr_id is SLDR_ID_ENOISE :
             nuSE = self.sliderENoise.value()
-            self.labelENoise.setText(str('%.2E'%(10**(nuSE/10))) + '(V/m)^2')
+            self.labelENoise.setText(str('%.2E'%(10**(nuSE/10))))
 
         elif sldr_id is SLDR_ID_BAMBIENT :
             SBa = self.sliderBAmbient.value()
-            self.labelBAmbient.setText(str('%.2E'%(10**(SBa/10))) + 'T^2 /Hz')
+            self.labelBAmbient.setText(str('%.2E'%(10**(SBa/10))))
 
         elif sldr_id is SLDR_ID_VNOISE :
             SV = self.sliderVNoise.value()
-            self.labelVNoise.setText(str('%.2E'%(10**(SV/10))) + '(V/m)^2')
+            self.labelVNoise.setText(str('%.2E'%(10**(SV/10))))
 
         elif sldr_id is SLDR_ID_NUXY :
             NuXY = self.sliderNuXY.value()

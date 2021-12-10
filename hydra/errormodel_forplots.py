@@ -255,16 +255,16 @@ def compute_total_errors(*args) :
         
         #nu_c_list
         
-        nu_c, Om, dzB, nuSE, SBa, SV, nu_XY, pulse_shaping, g_factor, vib_mode, chi, dx, SA, nbar, sym_fluc = params
+        nu_c, dzB, Om, nuSE, SBa, SV, nu_XY, nbar, phi, chi, SA, sym_fluc, g_factor, pulse_shaping, vib_mode, dx = params
 
         nu_s = np.sqrt(3) * nu_c
 
         eta_s = compute_eta(nu_s, dzB)
         eta_c = compute_eta(nu_c, dzB)
 
-        if vib_mode is VIB_MODE_AXIAL_STR :
+        if vib_mode == VIB_MODE_AXIAL_STR :
             eta = eta_s
-        elif vib_mode is VIB_MODE_AXIAL_COM :
+        elif vib_mode == VIB_MODE_AXIAL_COM :
             eta = eta_c
 
         #------------------------------
@@ -273,9 +273,9 @@ def compute_total_errors(*args) :
 
         # Compute STR mode heating rate
 
-        if vib_mode is VIB_MODE_AXIAL_STR :
+        if vib_mode == VIB_MODE_AXIAL_STR :
             ndot = ndot_STR(nu_c, nu_s, DIST_ELECTRODE, nuSE)
-        elif vib_mode is VIB_MODE_AXIAL_COM :
+        elif vib_mode == VIB_MODE_AXIAL_COM :
             ndot = ndot_COM(nu_c, nuSE)
 
         errors_h += [err_heating(ndot, eta, Om, HEATING_FACTOR)]

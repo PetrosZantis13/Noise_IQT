@@ -8,49 +8,57 @@ plt.rcParams['font.size'] = 11
 
 print("Let's plot!")
 
-"Continue here to produce some interesting plots!"
-
 KHZ = 2*np.pi*1e3
 MHZ = 2*np.pi*1e6
 
-# make the names better
-var_name_list = ["COM frequency (kHz)", "Gate Rabi frequency (kHz)", "Magnetic field gradient (T/m)",
+# Parameter name list
+var_name_list = ["COM frequency (kHz)", "Magnetic field gradient (T/m)", "Gate Rabi frequency (kHz)",
                  r'Scaled Electric field noise (V/m)$^2$', "Ambient Magnetic field noise (T$^2$/ Hz)", 
-                 "Voltage noise (V$^2$/ Hz)", "Radial mode frequency (MHz)", "Pulse shaping", 
-                 r"G factor (m^-1)", "Vib mode", "Chi", "dx", "SA", 
-                 r"Initial temperature $\bar{n}$", "sym_fluc"]
+                 "Voltage noise (V$^2$/ Hz)", "Radial mode frequency (MHz)", r"Initial temperature $\bar{n}$",                 
+                 r"Heating factor $\phi$", r"Amplitude signal-to-noise ratio $\chi$",
+                 "CCW current noise (A$^2$/ Hz)", r"Variance from voltage noise $\Delta$s",                 
+                 r"G factor (m^-1)", "Pulse shaping",  "Vib mode", "dx"]
 
+# Parameter initial values
 nu_c = 300*KHZ
-Om = 50*KHZ
 dzB = 50
-nuSE = 10**-4
+Om = 50*KHZ
+nuSE = 10**-6
 SBa = 10**-23
 SV = 1
 nuXY = 1.5*MHZ
-pulse_shaping = False
-g_factor = 70
-vib_mode = 0   # STRETCH
-chi = 0
-dx = 1e-9
-SA = 10**-12
 nbar = 0.1
+phi = 1
+chi = 0
+SA = 10**-12
 sym_fluc = 0
+g_factor = 70
+pulse_shaping = False
+vib_mode = 0   # Stretch mode
+dx = 1e-9
 
+# Parameter variable lists 
 nu_c_list = np.linspace(100, 600, 100)*KHZ
-Om_list = np.linspace(1, 150, 151)*KHZ
 dzB_list = np.linspace(1, 150, 151)
-nuSE_list = np.linspace(0, 10**-4, 101)
-SBa_list = np.linspace(0, 10**-20, 101)
-SV_list = np.linspace(0, 10**-14, 101)
+Om_list = np.linspace(1, 150, 151)*KHZ
+nuSE_list = np.logspace(-8, -3, 101)
+SBa_list = np.logspace(-25, -19, 101)
+SV_list = np.logspace(-19, -12, 101)
 nuXY_list = np.linspace(1, 5, 101)*MHZ
-g_factor_list = np.linspace(0, 100, 101)
-SA_list = np.linspace(0, 10**-6, 101)
 nbar_list = np.linspace(0, 10, 101)
+phi_list = np.linspace(0, 10, 101)  # not sure
+chi_list = np.linspace(0, 1, 101)
+SA_list = np.logspace(-15, -3, 101)
+sym_fluc_list = np.linspace(0, 10**-6, 101)  # not sure
+g_factor_list = np.linspace(0, 100, 101)
+pulse_shaping_list = np.linspace(0, 10, 101)  # not sure
+vib_mode_list = np.array([0, 1])        # 0 => Stretch mode, 1 => COM mode
+dx_list = np.linspace(0, 1e-8, 101)
 
-var_lists = [nu_c_list, Om_list, dzB_list, nuSE_list, SBa_list, SV_list, nuXY_list, g_factor_list, SA_list, nbar_list]
 
-fixed = [nu_c, Om, dzB, nuSE, SBa, SV, nuXY, pulse_shaping, 
-        g_factor, vib_mode, chi, dx, SA, nbar, sym_fluc]
+var_lists = [nu_c_list, dzB_list, Om_list, nuSE_list, SBa_list, SV_list, nuXY_list, 
+             nbar_list, phi_list, chi_list, SA_list, sym_fluc_list, g_factor_list,
+             pulse_shaping_list, vib_mode_list, dx_list]
 
 def plot_errors(*args):
     
@@ -80,15 +88,18 @@ def plot_errors(*args):
     plt.xlabel(var_name_list[list_idx])
     plt.ylabel("Infidelity")
     plt.yscale("log")
+    if(list_idx>=3 and list_idx<=5 or list_idx==10):
+        plt.xscale("log")
+    
     plt.ylim(10**-3, 10**0)
     plt.legend()
     plt.show()
 
-for i in range(0, len(var_lists)):
-    fixed = [nu_c, Om, dzB, nuSE, SBa, SV, nuXY, pulse_shaping, 
-        g_factor, vib_mode, chi, dx, SA, nbar, sym_fluc]
+for i in range(10, len(var_lists)):
+    #if(i!=6 or i!=9):
+    fixed = [nu_c, dzB, Om, nuSE, SBa, SV, nuXY, nbar, phi, chi, SA, sym_fluc, 
+             g_factor, pulse_shaping, vib_mode, dx]
     fixed[i] = var_lists[i]
     plot_errors(*fixed)
     
     
-
