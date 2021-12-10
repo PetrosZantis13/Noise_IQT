@@ -461,64 +461,6 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="layoutWidget">
-      <property name="geometry">
-       <rect>
-        <x>1100</x>
-        <y>60</y>
-        <width>151</width>
-        <height>76</height>
-       </rect>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QRadioButton" name="radioBtnPulseShaping">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>Pulse Shaping</string>
-         </property>
-         <property name="autoExclusive">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QRadioButton" name="radioBtnShowOffRes">
-         <property name="text">
-          <string>Show</string>
-         </property>
-         <property name="autoExclusive">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QRadioButton" name="radioBtnIncludeOffErr">
-         <property name="text">
-          <string>Include Error</string>
-         </property>
-         <property name="autoExclusive">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QLabel" name="label">
-      <property name="geometry">
-       <rect>
-        <x>1060</x>
-        <y>30</y>
-        <width>151</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Off-resonant coupling :</string>
-      </property>
-     </widget>
      <widget class="QRadioButton" name="radioBtnOptFid">
       <property name="enabled">
        <bool>true</bool>
@@ -674,6 +616,100 @@
       </property>
       <property name="checked">
        <bool>false</bool>
+      </property>
+      <property name="autoExclusive">
+       <bool>false</bool>
+      </property>
+     </widget>
+     
+     <widget class="QComboBox" name="comboBoxTraceNum">
+      <property name="geometry">
+       <rect>
+        <x>1160</x>
+        <y>25</y>
+        <width>100</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <item>
+       <property name="text">
+        <string>COM frequency</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>dzB</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Om</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>nuSE</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>SBa</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>SV</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>NuXY</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>nbar</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>phi</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QLabel" name="label_12">
+      <property name="geometry">
+       <rect>
+        <x>1055</x>
+        <y>28</y>
+        <width>101</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Variable parameter:</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="radioBtnTraceUpdate">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>1060</x>
+        <y>55</y>
+        <width>111</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::RightToLeft</enum>
+      </property>
+      <property name="text">
+       <string>Update :       </string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
       </property>
       <property name="autoExclusive">
        <bool>false</bool>
@@ -950,6 +986,69 @@
       <property name="text">
        <string>DeltaS</string>
       </property>
+     </widget>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>630</x>
+        <y>510</y>
+        <width>151</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Off-resonant coupling :</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="radioBtnOptFid">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QWidget" name="layoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>660</x>
+        <y>530</y>
+        <width>151</width>
+        <height>76</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QRadioButton" name="radioBtnPulseShaping">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Pulse Shaping</string>
+         </property>
+         <property name="autoExclusive">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="radioBtnShowOffRes">
+         <property name="text">
+          <string>Show</string>
+         </property>
+         <property name="autoExclusive">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="radioBtnIncludeOffErr">
+         <property name="text">
+          <string>Include Error</string>
+         </property>
+         <property name="autoExclusive">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
      <widget class="PlotWidget" name="legendWidget" native="true">
       <property name="geometry">

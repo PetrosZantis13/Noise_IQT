@@ -261,7 +261,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.labelGradient.setText(str(data['slider']['dzB']) + ' T/m')
 
         self.sliderPower.setValue(data['slider']['Om'])
-        self.labelPower.setText(str(data['slider']['Om']) + ' KHz')
+        self.labelPower.setText(str(data['slider']['Om']) + ' kHz')
 
         self.sliderENoise.setValue(int(data['slider']['nuSE']*10))
         self.labelENoise.setText(str('%.2E'%(10**(data['slider']['nuSE']))))
@@ -535,19 +535,19 @@ class MainWindow(QtWidgets.QMainWindow):
 
         elif sldr_id is SLDR_ID_POWER :
             Om = self.sliderPower.value()
-            self.labelPower.setText(str(Om) + ' KHz')
+            self.labelPower.setText(str(Om) + ' kHz')
 
         elif sldr_id is SLDR_ID_ENOISE :
             nuSE = self.sliderENoise.value()
-            self.labelENoise.setText(str('%.2E'%(10**(nuSE/10))))
+            self.labelENoise.setText(str('%.2E'%(10**(nuSE/10))) + '(V/m)^2')
 
         elif sldr_id is SLDR_ID_BAMBIENT :
             SBa = self.sliderBAmbient.value()
-            self.labelBAmbient.setText(str('%.2E'%(10**(SBa/10))))
+            self.labelBAmbient.setText(str('%.2E'%(10**(SBa/10))) + 'T^2 /Hz')
 
         elif sldr_id is SLDR_ID_VNOISE :
             SV = self.sliderVNoise.value()
-            self.labelVNoise.setText(str('%.2E'%(10**(SV/10))))
+            self.labelVNoise.setText(str('%.2E'%(10**(SV/10))) + '(V/m)^2')
 
         elif sldr_id is SLDR_ID_NUXY :
             NuXY = self.sliderNuXY.value()

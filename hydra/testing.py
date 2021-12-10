@@ -29,6 +29,10 @@ def foo(*args):
     
     print("end\n")
 
-foo(3.0, 45, np.linspace(0,3,4), 4, 5)
+# foo(3.0, 45, np.linspace(0,3,4), 4, 5)
+# 
+# foo(3.0, 45, 4, 5, np.linspace(0,3,4))
 
-foo(3.0, 45, 4, 5, np.linspace(0,3,4))
+mystr = "Com frequency (eto)"
+
+print(mystr.split("(")) 
