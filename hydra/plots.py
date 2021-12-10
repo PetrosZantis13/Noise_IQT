@@ -17,13 +17,13 @@ var_name_list = ["COM frequency (kHz)", "Magnetic field gradient (T/m)", "Gate R
                  "Voltage noise (V$^2$/ Hz)", "Radial mode frequency (MHz)", r"Initial temperature $\bar{n}$",                 
                  r"Heating factor $\phi$", r"Amplitude signal-to-noise ratio $\chi$",
                  "CCW current noise (A$^2$/ Hz)", r"Variance from voltage noise $\Delta$s",                 
-                 r"G factor (m^-1)", "Pulse shaping",  "Vib mode", "dx"]
+                 r"G factor (m^-1)", "Pulse shaping",  "Vibrational mode (0 => Stretch, 1 => COM)", "dx"]
 
 # Parameter initial values
 nu_c = 300*KHZ
 dzB = 50
 Om = 50*KHZ
-nuSE = 10**-6
+nuSE = 10**-5
 SBa = 10**-23
 SV = 1
 nuXY = 1.5*MHZ
@@ -77,6 +77,11 @@ def plot_errors(*args):
     
     err_tot = err_h + err_d + err_t + err_a
     
+    if(list_idx==0 or list_idx==2):
+        variable_list*= 1/KHZ
+    elif(list_idx==6):
+        variable_list*= 1/MHZ
+    
     plt.plot(variable_list, err_tot, label = "Total Errors", color = 'b')
     plt.plot(variable_list, err_h, label = "Heating", color = 'r')
     plt.plot(variable_list, err_d, label = "Decoherence", color = 'k')
@@ -95,7 +100,7 @@ def plot_errors(*args):
     plt.legend()
     plt.show()
 
-for i in range(10, len(var_lists)):
+for i in range(0, len(var_lists)):
     #if(i!=6 or i!=9):
     fixed = [nu_c, dzB, Om, nuSE, SBa, SV, nuXY, nbar, phi, chi, SA, sym_fluc, 
              g_factor, pulse_shaping, vib_mode, dx]
