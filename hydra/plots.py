@@ -17,7 +17,7 @@ var_name_list = ["COM frequency (kHz)", "Magnetic field gradient (T/m)", "Gate R
                  "Voltage noise (V$^2$/ Hz)", "Radial mode frequency (MHz)", r"Initial temperature $\bar{n}$",                 
                  r"Heating factor $\phi$", r"Amplitude signal-to-noise ratio $\chi$",
                  "CCW current noise (A$^2$/ Hz)", r"Variance from voltage noise $\Delta$s",                 
-                 r"G factor (m^-1)", "Pulse shaping",  "Vibrational mode (0 => Stretch, 1 => COM)", "dx"]
+                 r"Geometric factor $(m^-1)$", "Pulse shaping",  "Vibrational mode (0 => Stretch, 1 => COM)", "dx"]
 
 # Parameter initial values
 nu_c = 300*KHZ
@@ -95,7 +95,8 @@ def plot_errors(*args):
     plt.yscale("log")
     if(list_idx>=3 and list_idx<=5 or list_idx==10):
         plt.xscale("log")
-    
+    elif(list_idx==14):
+        plt.xticks([0,1])
     plt.ylim(10**-3, 10**0)
     plt.legend()
     plt.show()

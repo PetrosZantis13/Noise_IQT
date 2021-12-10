@@ -89,9 +89,9 @@
      <widget class="QComboBox" name="comboBoxArchitecture">
       <property name="geometry">
        <rect>
-        <x>1180</x>
+        <x>1170</x>
         <y>170</y>
-        <width>101</width>
+        <width>80</width>
         <height>22</height>
        </rect>
       </property>
@@ -109,9 +109,9 @@
      <widget class="QComboBox" name="comboBoxVNoise">
       <property name="geometry">
        <rect>
-        <x>1180</x>
+        <x>1170</x>
         <y>200</y>
-        <width>101</width>
+        <width>80</width>
         <height>22</height>
        </rect>
       </property>
@@ -155,9 +155,9 @@
      <widget class="QComboBox" name="comboBoxVibMode">
       <property name="geometry">
        <rect>
-        <x>1180</x>
+        <x>1170</x>
         <y>230</y>
-        <width>101</width>
+        <width>80</width>
         <height>22</height>
        </rect>
       </property>
@@ -533,7 +533,7 @@
        <rect>
         <x>1140</x>
         <y>290</y>
-        <width>141</width>
+        <width>80</width>
         <height>22</height>
        </rect>
       </property>
@@ -674,6 +674,16 @@
       <item>
        <property name="text">
         <string>phi</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Chi</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>SA</string>
        </property>
       </item>
      </widget>
