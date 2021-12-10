@@ -12,81 +12,72 @@ print("Let's plot!")
 
 KHZ = 2*np.pi*1e3
 MHZ = 2*np.pi*1e6
-NU_C_LIST = np.linspace(100, 600, 100)*KHZ
 
+# make the names better
+var_name_list = ["COM frequency (kHz)", "Gate Rabi frequency ()", "Magnetic field gradient ()",
+                 "Scaled Electric field noise ()", "Ambient Magnetic field noise ()", "Voltage noise ()", 
+                 "Radial frequency ()", "Pulse shaping", "G factor",
+                 "Vib mode", "Chi", "dx", "SA", "nbar", "sym_fluc"]
 
-dzB = 50
+nu_c = 300*KHZ
 Om = 50*KHZ
+dzB = 50
 nuSE = 10**-4
 SBa = 10**-23
 SV = 1
-NuXY = 1.5*MHZ
+nuXY = 1.5*MHZ
 pulse_shaping = False
 g_factor = 70
 vib_mode = 0   # STRETCH
 chi = 0
+dx = 1e-9
 SA = 10**-12
 nbar = 0.1
 sym_fluc = 0
-dx = 1e-9
 
-def plot_errors():
+nu_c_list = np.linspace(100, 600, 100)*KHZ
+Om_list = np.linspace(1, 150, 151)*KHZ
+dzB_list = np.linspace(1, 150, 151)
+nuSE_list = np.linspace(0, 10**-4, 101)
+SBa_list = np.linspace(0, 10**-20, 101)
+SV_list = np.linspace(0, 10**-14, 101)
+nuXY_list = np.linspace(1, 5, 101)*MHZ
+g_factor_list = np.linspace(0, 100, 101)
+SA_list = np.linspace(0, 10**-6, 101)
+nbar_list = np.linspace(0, 10, 101)
 
-    err_h, err_d, err_t, err_o, err_a = em.compute_total_errors(
-        NU_C_LIST, Om, dzB, nuSE, SBa, SV, NuXY, pulse_shaping, 
-        g_factor, vib_mode, chi, dx, SA, nbar, sym_fluc)
+def plot_errors(*args):
+    
+    params = list(args)
+    list_idx = 0
+    
+    for i in range(0,len(params)):
+        if(type(params[i]) == np.ndarray):
+            list_idx = i
+            print("List is in position: " + str(list_idx))
+            variable_list = params[i]  
+    
+    var_name = var_name_list[list_idx]
+            
+    err_h, err_d, err_t, err_o, err_a = em.compute_total_errors(*args)
     
     err_tot = err_h + err_d + err_t + err_a
     
-    plt.plot(NU_C_LIST/KHZ, err_tot, label = "Total Errors", color = 'b')
-    plt.plot(NU_C_LIST/KHZ, err_h, label = "Heating", color = 'r')
-    plt.plot(NU_C_LIST/KHZ, err_d, label = "Decoherence", color = 'k')
-    plt.plot(NU_C_LIST/KHZ, err_t, label = "Kerr", color = 'm')
-    plt.plot(NU_C_LIST/KHZ, err_a, label = "Amplitude", color = 'g')
+    plt.plot(variable_list, err_tot, label = "Total Errors", color = 'b')
+    plt.plot(variable_list, err_h, label = "Heating", color = 'r')
+    plt.plot(variable_list, err_d, label = "Decoherence", color = 'k')
+    plt.plot(variable_list, err_t, label = "Kerr", color = 'm')
+    plt.plot(variable_list, err_a, label = "Amplitude", color = 'g')
     
-    plt.title("Errors (Infidelity) over Secular Frequency")
-    plt.xlabel("COM frequency (kHz)")
+    plt.title("Errors (Infidelity) over " + var_name)  # EVENTUALLY REMOVE UNITS FROM HERE
+    #plt.xlabel("COM frequency (kHz)")
+    plt.xlabel(var_name)
     plt.ylabel("Infidelity")
     plt.yscale("log")
     plt.ylim(10**-3, 10**0)
     plt.legend()
     plt.show()
+    
 
-#plot_errors()
-
-'''
-JUST TO TEST THE NEW FUNCTION, RESTRUCTURE LATER
-'''
-
-nu_c = 300*KHZ
-nuSE_LIST = np.linspace(0, 10**-4, 101)
-
-def plot_errors2():
-
-    err_h, err_d, err_t, err_o, err_a = em.compute_total_errors(
-        nu_c, Om, dzB, nuSE_LIST, SBa, SV, NuXY, pulse_shaping, 
+plot_errors(nu_c, Om, dzB, nuSE_list, SBa, SV, nuXY, pulse_shaping, 
         g_factor, vib_mode, chi, dx, SA, nbar, sym_fluc)
-    
-    err_tot = err_h + err_d + err_t + err_a
-    
-    plt.plot(nuSE_LIST, err_tot, label = "Total Errors", color = 'b')
-    plt.plot(nuSE_LIST, err_h, label = "Heating", color = 'r')
-    plt.plot(nuSE_LIST, err_d, label = "Decoherence", color = 'k')
-    plt.plot(nuSE_LIST, err_t, label = "Kerr", color = 'm')
-    plt.plot(nuSE_LIST, err_a, label = "Amplitude", color = 'g')
-    
-    plt.title("Errors (Infidelity) over Secular Frequency")
-    plt.xlabel("COM frequency (kHz)")
-    plt.ylabel("Infidelity")
-    plt.yscale("log")
-    plt.ylim(10**-3, 10**0)
-    plt.legend()
-    plt.show()
-
-plot_errors2()
-
-# TRY IT AGAINST ALL VARIABLES
-
-
-
-

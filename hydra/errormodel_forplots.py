@@ -240,6 +240,8 @@ def compute_total_errors(*args) :
             list_idx = i
             #print("List is in position: " + str(list_idx))
             variable_list = params[i]  
+        
+    # Petro try to catch the exception when no list is provided, or wrong args format
 
     errors_h = [] # Heating errors
     errors_d = [] # Decoherence errors
