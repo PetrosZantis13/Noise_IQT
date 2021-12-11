@@ -3,7 +3,8 @@ from pyqtgraph import PlotWidget, TextItem
 import pyqtgraph as pg
 import sys, os
 import numpy as np
-import errormodel_myedits as em
+#import errormodel_myedits as em    for backup
+import errormodel_forplots as em
 import json
 from scipy.interpolate import griddata, interp1d
 
@@ -303,7 +304,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def update_table(self, err_min, nu_min, tgate, ndot) :
 
         self.tableInfo.setItem(0,1, QtWidgets.QTableWidgetItem('%.3f'%((1 - err_min)*100) + ' %'))
-        self.tableInfo.setItem(1,1, QtWidgets.QTableWidgetItem('%.1f'%(nu_min/KHZ) + ' KHZ'))
+        self.tableInfo.setItem(1,1, QtWidgets.QTableWidgetItem('%.1f'%(nu_min/KHZ) + ' kHz'))
         self.tableInfo.setItem(2,1, QtWidgets.QTableWidgetItem('%.3f'%(tgate*1e3) + ' ms'))
         self.tableInfo.setItem(3,1, QtWidgets.QTableWidgetItem('%.3f'%ndot))
 
@@ -349,8 +350,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.legendWidget.getPlotItem().hideAxis('left')
 
 
-    def init_graph(self) :
-
+    def init_graph(self):
 
         self.graphWidget.setBackground(None)
 
@@ -431,11 +431,11 @@ class MainWindow(QtWidgets.QMainWindow):
         print("nbar = " + str(nbar))
         print("SA = " + str(SA))
         
-
-        err_h, err_d, err_t, err_o, err_a = em.compute_total_errors(self.NU_C_LIST, Om, dzB, nuSE, SBa, SV, NuXY,
-                                                pulse_shaping = pulse_shaping, g_factor = g_factor,
-                                                vib_mode = vib_mode, chi = chi, dx = 1e-9, SA = SA,
-                                                nbar = nbar, sym_fluc = sym_fluc)
+        dx = 1e-9
+        params = [self.NU_C_LIST, dzB, Om, nuSE, SBa, SV, NuXY, nbar, phi, chi, SA, sym_fluc, 
+             g_factor, pulse_shaping, vib_mode, dx]
+            
+        err_h, err_d, err_t, err_o, err_a = em.compute_total_errors(*params)
         err_tot = err_h + err_d + err_t + err_a
 
         if inc_offres_err and show_offres: err_tot += err_o
@@ -477,7 +477,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.sliderPower.setMaximum(150)
 
         self.sliderENoise.setMinimum(-80)
-        self.sliderENoise.setMaximum(-40)
+        self.sliderENoise.setMaximum(-30)
 
         self.sliderBAmbient.setMinimum(-260)
         self.sliderBAmbient.setMaximum(-200)
