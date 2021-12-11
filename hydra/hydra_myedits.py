@@ -137,6 +137,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.comboBoxArchitecture.currentIndexChanged.connect(lambda : self.update_graph())
         self.comboBoxVNoise.currentIndexChanged.connect(lambda : self.update_graph())
         self.comboBoxVibMode.currentIndexChanged.connect(lambda : self.update_graph())
+        self.comboBoxVarParam.currentIndexChanged.connect(lambda : self.update_graph())
 
         # Innitialize Menubar items
         self.actionLoadChip.triggered.connect(lambda : self.load_presets(CHIP_PRESET_DATA))
@@ -373,6 +374,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
     def update_graph(self) :
+        
+        varParam = self.comboBoxVarParam.currentIndex()
+        print("VarParam = " + str(varParam))
 
         architecture = self.comboBoxArchitecture.currentIndex()
         if self.comboBoxVNoise.currentIndex() == CBOX_VNOISE_ID_CORR :
@@ -422,14 +426,14 @@ class MainWindow(QtWidgets.QMainWindow):
             sym_fluc = 2*np.pi* self.sliderSymFluc.value()
         else : sym_fluc = 0
         
-        print()
-        print("dzB = " + str(dzB))
-        print("Om = " + str(Om))
-        print("nuSE = " + str(nuSE))
-        print("SV = " + str(SV))
-        print("NuXY = " + str(NuXY))
-        print("nbar = " + str(nbar))
-        print("SA = " + str(SA))
+#         print()
+#         print("dzB = " + str(dzB))
+#         print("Om = " + str(Om))
+#         print("nuSE = " + str(nuSE))
+#         print("SV = " + str(SV))
+#         print("NuXY = " + str(NuXY))
+#         print("nbar = " + str(nbar))
+#         print("SA = " + str(SA))
         
         dx = 1e-9
         params = [self.NU_C_LIST, dzB, Om, nuSE, SBa, SV, NuXY, nbar, phi, chi, SA, sym_fluc, 

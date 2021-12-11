@@ -622,7 +622,7 @@
       </property>
      </widget>
      
-     <widget class="QComboBox" name="comboBoxTraceNum">
+     <widget class="QComboBox" name="comboBoxVarParam">
       <property name="geometry">
        <rect>
         <x>1160</x>
