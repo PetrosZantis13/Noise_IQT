@@ -354,6 +354,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def init_graph(self):
 
         self.graphWidget.setBackground(None)
+        self.graphXaxis = self.comboBoxVarParam.currentIndex()
 
         self.graphWidget.plot([self.NU_C_LIST[0]/KHZ, self.NU_C_LIST[-1]/KHZ], [1e-2, 1e-2], pen=pg.mkPen('#666666', width=1, style=QtCore.Qt.DashLine))
         self.graphWidget.plot([self.NU_C_LIST[0]/KHZ, self.NU_C_LIST[-1]/KHZ], [1e-4, 1e-4], pen=pg.mkPen('#666666', width=1, style=QtCore.Qt.DashLine))
@@ -362,8 +363,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.traces[0].errors = [[0], [0], [0], [0], [0], [0], [0]]
         self.traces[0].point = self.graphWidget.plot([0], [1], pen= pg.mkPen(None), brush = 'k', symbol = 'o')
 
-        self.graphWidget.plot([300], [2e-1])
-        self.graphWidget.plot([300], [1e-5])
+        self.graphWidget.plot([300], [2e-1])    # Purpose?
+        self.graphWidget.plot([300], [1e-5])    # Purpose?
 
         self.graphWidget.setLogMode(False, True)
 
@@ -376,7 +377,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def update_graph(self) :
         
         varParam = self.comboBoxVarParam.currentIndex()
-        print("VarParam = " + str(varParam))
+        if(varParam!=self.graphXaxis):            
+            self.graphXaxis = varParam
+            print("VarParam changed to " + str(varParam))
 
         architecture = self.comboBoxArchitecture.currentIndex()
         if self.comboBoxVNoise.currentIndex() == CBOX_VNOISE_ID_CORR :
