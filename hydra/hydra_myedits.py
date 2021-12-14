@@ -59,7 +59,7 @@ class Trace:
 
     curves = []
     errors = []
-    NU_C_LIST = np.linspace(100, 800, 100)*KHZ
+    #NU_C_LIST = np.linspace(100, 800, 100)*KHZ
     hide = False
     update = False
     active = False
@@ -78,14 +78,15 @@ class Trace:
         if self.update :
             self.table = {"tgate" : tgate, "numin" : numin, "errmin" : errmin, "ndot" : ndot}
 
-    def plotTrace(self) :
+    def plotTrace(self, data_list, units) :
         if self.hide :
             for curve in self.curves :
                 curve.setData([300], [1])
             self.point.setData([300], [1])
         elif self.update :
             for curve, err in zip(self.curves, self.errors) :
-                curve.setData(self.NU_C_LIST/KHZ, err)
+                #curve.setData(self.NU_C_LIST/KHZ, err)
+                curve.setData(data_list/units, err)
             self.point.setData([self.table["numin"]/KHZ], [self.table["errmin"]])
 
 
@@ -110,7 +111,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.radioBtnTraceHide.toggled.connect(lambda : self.trace_hide() )
 
         # Innitialize  Graph
-        self.NU_C_LIST = np.linspace(100, 800, 100)*KHZ
+        #self.NU_C_LIST = np.linspace(100, 800, 100)*KHZ
+        self.init_param_lists()
         self.init_graph()
 
         # Innitialize all slider and their labels
@@ -160,12 +162,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def trace_hide(self) :
         self.traces[self.active_trace].hide = self.radioBtnTraceHide.isChecked()
-        self.traces[self.active_trace].plotTrace()
+        self.traces[self.active_trace].plotTrace(self.var_list, self.units)
         self.update_graph()
 
     def trace_update(self) :
         self.traces[self.active_trace].update = self.radioBtnTraceUpdate.isChecked()
-        self.traces[self.active_trace].plotTrace()
+        self.traces[self.active_trace].plotTrace(self.var_list, self.units)
         self.update_graph()
 
     def toggle_traces(self) :
@@ -349,15 +351,63 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.legendWidget.getPlotItem().hideAxis('bottom')
         self.legendWidget.getPlotItem().hideAxis('left')
+    
+    def init_param_lists(self):
+        
+#         self.NU_C_LIST = np.linspace(100, 800, 100)*KHZ
+#         self.dzB_list = np.linspace(1, 150, 151)
+#         self.Om_list = np.linspace(1, 150, 151)*KHZ
+#         self.nuSE_list = np.logspace(-8, -3, 101)
+#         self.SBa_list = np.logspace(-25, -19, 101)
+#         self.SV_list = np.logspace(-19, -12, 101)
+#         self.nuXY_list = np.linspace(1, 5, 101)*MHZ
+#         self.nbar_list = np.linspace(0, 10, 101)
+#         self.phi_list = np.linspace(0, 10, 101)  # not sure
+#         self.chi_list = np.linspace(0, 1, 101)
 
+        NU_C_LIST = np.linspace(100, 800, 101)*KHZ
+        dzB_list = np.linspace(1, 150, 150)
+        Om_list = np.linspace(1, 150, 151)*KHZ
+        nuSE_list = np.logspace(-8, -3, 101)
+        SBa_list = np.logspace(-25, -19, 101)
+        SV_list = np.logspace(-19, -12, 101)
+        nuXY_list = np.linspace(1, 5, 101)*MHZ
+        nbar_list = np.linspace(0, 10, 101)
+        phi_list = np.linspace(0, 10, 101)  # not sure
+        chi_list = np.linspace(0, 1, 101)
+        
+        self.var_lists = [NU_C_LIST, dzB_list, Om_list, nuSE_list, SBa_list, SV_list, nuXY_list, 
+             nbar_list, phi_list, chi_list]
+        
+        self.var_name_list = ["COM frequency (kHz)", "Magnetic field gradient (T/m)", "Gate Rabi frequency (kHz)",
+                 r'Scaled Electric field noise (V/m)$^2$', "Ambient Magnetic field noise (T$^2$/ Hz)", 
+                 "Voltage noise (V$^2$/ Hz)", "Radial mode frequency (MHz)", r"Initial temperature $\bar{n}$",                 
+                 r"Heating factor $\phi$", r"Amplitude signal-to-noise ratio $\chi$",
+                 "CCW current noise (A$^2$/ Hz)", r"Variance from voltage noise $\Delta$s",                 
+                 r"Geometric factor $(m^-1)$", "Pulse shaping",  "Vibrational mode (0 => Stretch, 1 => COM)", "dx"]
+
+    
 
     def init_graph(self):
 
         self.graphWidget.setBackground(None)
         self.graphXaxis = self.comboBoxVarParam.currentIndex()
+        
+        self.var_list = self.var_lists[self.graphXaxis]
+        
+        if(self.graphXaxis==0 or self.graphXaxis==2):
+            self.units = KHZ
+        elif(self.graphXaxis==6):
+            self.units = MHZ
+        else:
+            self.units = 1
 
-        self.graphWidget.plot([self.NU_C_LIST[0]/KHZ, self.NU_C_LIST[-1]/KHZ], [1e-2, 1e-2], pen=pg.mkPen('#666666', width=1, style=QtCore.Qt.DashLine))
-        self.graphWidget.plot([self.NU_C_LIST[0]/KHZ, self.NU_C_LIST[-1]/KHZ], [1e-4, 1e-4], pen=pg.mkPen('#666666', width=1, style=QtCore.Qt.DashLine))
+#         self.graphWidget.plot([self.NU_C_LIST[0]/KHZ, self.NU_C_LIST[-1]/KHZ], [1e-2, 1e-2], pen=pg.mkPen('#666666', width=1, style=QtCore.Qt.DashLine))
+#         self.graphWidget.plot([self.NU_C_LIST[0]/KHZ, self.NU_C_LIST[-1]/KHZ], [1e-4, 1e-4], pen=pg.mkPen('#666666', width=1, style=QtCore.Qt.DashLine))
+        
+        self.graphWidget.plot([self.var_list[0]/self.units, self.var_list[-1]/self.units], [1e-2, 1e-2], pen=pg.mkPen('#666666', width=1, style=QtCore.Qt.DashLine))
+        self.graphWidget.plot([self.var_list[0]/self.units, self.var_list[-1]/self.units], [1e-4, 1e-4], pen=pg.mkPen('#666666', width=1, style=QtCore.Qt.DashLine))
+
 
         self.traces[0].curves = [self.graphWidget.plot([0], [0], pen=pen) for pen in self.get_pens(COLORS[0])]
         self.traces[0].errors = [[0], [0], [0], [0], [0], [0], [0]]
@@ -365,12 +415,17 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.graphWidget.plot([300], [2e-1])    # Purpose?
         self.graphWidget.plot([300], [1e-5])    # Purpose?
-
-        self.graphWidget.setLogMode(False, True)
+        
+        if(self.graphXaxis>=3 and self.graphXaxis<=5 or self.graphXaxis==10):
+            self.graphWidget.setLogMode(True, True)
+        else:
+            self.graphWidget.setLogMode(False, True)
 
         self.graphWidget.setLabel('left', 'Infidelity')
-        self.graphWidget.setLabel('bottom', 'COM Secular Frequency', 'kHz')
-        self.graphWidget.setXRange(100, 820, padding=0)
+        #self.graphWidget.setLabel('bottom', 'COM Secular Frequency', 'kHz')
+        self.graphWidget.setLabel('bottom', self.var_name_list[self.graphXaxis])
+        #self.graphWidget.setXRange(100, 820, padding=0)
+        self.graphWidget.setXRange(min(self.var_list/self.units), max(self.var_list/self.units)*1.03, padding=0)
         self.graphWidget.setYRange(-4, 0, padding=0.02)
 
 
@@ -380,6 +435,9 @@ class MainWindow(QtWidgets.QMainWindow):
         if(varParam!=self.graphXaxis):            
             self.graphXaxis = varParam
             print("VarParam changed to " + str(varParam))
+            # so now init graph depending on param, label accordingly etc etc
+            # CLEAR PREVIOUS GRAPH
+            self.init_graph()
 
         architecture = self.comboBoxArchitecture.currentIndex()
         if self.comboBoxVNoise.currentIndex() == CBOX_VNOISE_ID_CORR :
@@ -401,7 +459,7 @@ class MainWindow(QtWidgets.QMainWindow):
         show_offres = self.radioBtnShowOffRes.isChecked()
         inc_offres_err = self.radioBtnIncludeOffErr.isChecked()
         pulse_shaping = self.radioBtnPulseShaping.isChecked() and show_offres
-
+        
         dzB = self.sliderGradient.value()
         Om = self.sliderPower.value()* KHZ
         nuSE = 10**(self.sliderENoise.value()/10)
@@ -415,6 +473,7 @@ class MainWindow(QtWidgets.QMainWindow):
         '''
         self.sliderVNoise.setValue(4* self.sliderENoise.value())  # check the exact relationship
         phi = self.sliderPhi.value()
+        nu_c = 300*KHZ
 
 
         if include_amp_noise :
@@ -439,19 +498,31 @@ class MainWindow(QtWidgets.QMainWindow):
 #         print("SA = " + str(SA))
         
         dx = 1e-9
-        params = [self.NU_C_LIST, dzB, Om, nuSE, SBa, SV, NuXY, nbar, phi, chi, SA, sym_fluc, 
+        params = [nu_c, dzB, Om, nuSE, SBa, SV, NuXY, nbar, phi, chi, SA, sym_fluc, 
              g_factor, pulse_shaping, vib_mode, dx]
+
+        params[varParam] = self.var_lists[varParam]
             
         err_h, err_d, err_t, err_o, err_a = em.compute_total_errors(*params)
         err_tot = err_h + err_d + err_t + err_a
+        
+#         print("err_h= " + str(err_h))        
+#         print("err_d= " + str(err_d))       
 
         if inc_offres_err and show_offres: err_tot += err_o
         elif not show_offres : err_o = [0]*len(err_o)
 
+#         if self.radioBtnOptFid.isChecked() :
+#             err_min, nu_min = em.optimizeFidelity(self.var_list, err_tot)
+#         else :
+#             interp_func = interp1d(self.var_list, err_tot, kind='linear')
+#             nu_min = self.sliderFixNu.value()*KHZ
+#             err_min = interp_func(nu_min)
+
         if self.radioBtnOptFid.isChecked() :
-            err_min, nu_min = em.optimizeFidelity(self.NU_C_LIST, err_tot)
+            err_min, nu_min = 0.5,0.5
         else :
-            interp_func = interp1d(self.NU_C_LIST, err_tot, kind='linear')
+            interp_func = interp1d(self.var_list, err_tot, kind='linear')
             nu_min = self.sliderFixNu.value()*KHZ
             err_min = interp_func(nu_min)
 
@@ -471,7 +542,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.traces[self.active_trace].updateTable(tgate = tgate, numin = nu_min, errmin = err_min, ndot = ndot)
         self.traces[self.active_trace].updateErrors([err_h, err_d, err_t, err_o, err_a, err_tot])
-        self.traces[self.active_trace].plotTrace()
+        self.traces[self.active_trace].plotTrace(self.var_list, self.units)
 
 
     def init_sliders(self) :

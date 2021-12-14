@@ -251,12 +251,13 @@ def compute_total_errors(*args) :
 
     # Loop over the variable list:
     for var in variable_list :
+        
         params[list_idx] = var  # fix the variable for this loop iteration
         
         #nu_c_list
         
         nu_c, dzB, Om, nuSE, SBa, SV, nu_XY, nbar, phi, chi, SA, sym_fluc, g_factor, pulse_shaping, vib_mode, dx = params
-
+        
         nu_s = np.sqrt(3) * nu_c
 
         eta_s = compute_eta(nu_s, dzB)
@@ -368,8 +369,6 @@ def compute_total_errors(*args) :
 # ------------------------------------------
 # Optimize Fidelities
 # ------------------------------------------
-
-
 
 def optimizeFidelity(nu_c_list, err_list) :
     # Input : List of COM sec freqs and errors
