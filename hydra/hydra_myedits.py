@@ -152,13 +152,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.update_graph()
 
     def get_pens(self, color) :
-        return [pg.mkPen(color='r', width = 4, style=QtCore.Qt.CustomDashLine, dash=[1, 2]),
-                pg.mkPen(color='k', width = 4, style=QtCore.Qt.CustomDashLine, dash=[3, 12]),
-                pg.mkPen(color='m', width = 4, style=QtCore.Qt.CustomDashLine, dash=[6, 6]),
-                pg.mkPen(color='c', width = 4, style=QtCore.Qt.CustomDashLine, dash=[25, 4]),
-                pg.mkPen(color='g', width = 4, style=QtCore.Qt.DashDotLine),
-                pg.mkPen(color='b', width = 4, style=QtCore.Qt.DashDotDotLine),
-                pg.mkPen(color='y', width = 4)]
+        return [pg.mkPen(color='r', width = 5, style=QtCore.Qt.CustomDashLine, dash=[1, 2]),
+                pg.mkPen(color='k', width = 5, style=QtCore.Qt.CustomDashLine, dash=[3, 12]),
+                pg.mkPen(color='m', width = 5, style=QtCore.Qt.CustomDashLine, dash=[6, 6]),
+                pg.mkPen(color='c', width = 5, style=QtCore.Qt.CustomDashLine, dash=[25, 4]),
+                pg.mkPen(color='g', width = 5, style=QtCore.Qt.DashDotLine),
+                pg.mkPen(color='b', width = 5, style=QtCore.Qt.DashDotDotLine),
+                pg.mkPen(color='y', width = 5)]
 
     def trace_hide(self) :
         self.traces[self.active_trace].hide = self.radioBtnTraceHide.isChecked()
@@ -417,16 +417,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self.graphWidget.plot([300], [1e-5])    # Purpose?
         
         if(self.graphXaxis>=3 and self.graphXaxis<=5 or self.graphXaxis==10):
-            #self.graphWidget.setLogMode(True, True)
-            pass
+            self.graphWidget.setLogMode(True, True)
+            exponents = np.log10(self.var_list)
+            self.graphWidget.setXRange(min(exponents), max(exponents), padding=0)
         else:
             self.graphWidget.setLogMode(False, True)
+            self.graphWidget.setXRange(min(self.var_list/self.units), max(self.var_list/self.units)*1.03, padding=0)
 
         self.graphWidget.setLabel('left', 'Infidelity')
         #self.graphWidget.setLabel('bottom', 'COM Secular Frequency', 'kHz')
         self.graphWidget.setLabel('bottom', self.var_name_list[self.graphXaxis])
         #self.graphWidget.setXRange(100, 820, padding=0)
-        self.graphWidget.setXRange(min(self.var_list/self.units), max(self.var_list/self.units)*1.03, padding=0)
+        
         self.graphWidget.setYRange(-4, 0, padding=0.02)
 
 
