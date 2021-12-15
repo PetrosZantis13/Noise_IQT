@@ -379,9 +379,9 @@ def optimizeFidelity(var_list, err_list) :
 
     def opt_func(var) :
         interp_func = interp1d(var_list, err_list, kind='linear')
-        if var >= max(var_list) :
+        if var > max(var_list) :
             return 1
-        if var <= min(var_list) :
+        if var < min(var_list) :
             return 1
         else :
             return interp_func(var)

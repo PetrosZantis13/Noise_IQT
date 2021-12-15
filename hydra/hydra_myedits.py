@@ -64,19 +64,19 @@ class Trace:
     update = False
     active = False
     point = None
-    table = {"tgate" : 0, "numin" : 0, "errmin" : 1, "ndot" : 0}
+    table = {"tgate" : 0, "varmin" : 0, "errmin" : 1, "ndot" : 0}
 
     params = {}
-
+    
     def __init__(self):
         return None
 
     def updateErrors(self, errors):
         self.errors = errors
 
-    def updateTable(self, tgate = 0, numin = 0, errmin = 1, ndot = 0) :
+    def updateTable(self, tgate = 0, varmin = 0, errmin = 1, ndot = 0) :
         if self.update :
-            self.table = {"tgate" : tgate, "numin" : numin, "errmin" : errmin, "ndot" : ndot}
+            self.table = {"tgate" : tgate, "varmin" : varmin, "errmin" : errmin, "ndot" : ndot}
 
     def plotTrace(self, data_list, units) :
         if self.hide :
@@ -87,7 +87,7 @@ class Trace:
             for curve, err in zip(self.curves, self.errors) :
                 #curve.setData(self.NU_C_LIST/KHZ, err)
                 curve.setData(data_list/units, err)
-            self.point.setData([self.table["numin"]/KHZ], [self.table["errmin"]])
+            self.point.setData([self.table["varmin"]/units], [self.table["errmin"]])
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -523,7 +523,8 @@ class MainWindow(QtWidgets.QMainWindow):
 #             nu_min = self.sliderFixNu.value()*KHZ
 #             err_min = interp_func(nu_min)
     
-        '''FIX LATER!'''
+        '''FIX LATER!
+        make sure nu_c is replaced with nu_min in the equations etc'''
         nu_min = nu_c  
         
         if self.radioBtnOptFid.isChecked() :
@@ -543,11 +544,11 @@ class MainWindow(QtWidgets.QMainWindow):
             tgate = em.compute_tgate(nu_min, dzB, Om)
 
 
-        self.update_table(err_min, nu_min, tgate, ndot)
+        self.update_table(err_min, var_min, tgate, ndot)
 
         #self.opt_point.setData([nu_min/KHZ], [err_min])
 
-        self.traces[self.active_trace].updateTable(tgate = tgate, numin = nu_min, errmin = err_min, ndot = ndot)
+        self.traces[self.active_trace].updateTable(tgate = tgate, varmin = var_min, errmin = err_min, ndot = ndot)
         self.traces[self.active_trace].updateErrors([err_h, err_d, err_t, err_o, err_a, err_tot])
         self.traces[self.active_trace].plotTrace(self.var_list, self.units)
 
