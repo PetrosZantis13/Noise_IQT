@@ -373,24 +373,24 @@ def compute_total_errors(*args) :
 '''
 PETRO ALSO CHECK AND MODIFY THIS FUNCTION
 '''
-def optimizeFidelity(nu_c_list, err_list) :
+def optimizeFidelity(var_list, err_list) :
     # Input : List of COM sec freqs and errors
     # Output : Minimum achievable fidelity and corresponding optimal secular freq
 
-    def opt_func(nu_c) :
-        interp_func = interp1d(nu_c_list, err_list, kind='linear')
-        if nu_c >= 800*KHZ :
+    def opt_func(var) :
+        interp_func = interp1d(var_list, err_list, kind='linear')
+        if var >= max(var_list) :
             return 1
-        if nu_c <= 100*KHZ :
+        if var <= min(var_list) :
             return 1
         else :
-            return interp_func(nu_c)
+            return interp_func(var)
 
     # Minimize errors
-    bnds = [100*KHZ, 800*KHZ]
-    res = minimize(opt_func, (300*KHZ), method='Nelder-Mead')#, bounds=bnds)
+    bnds = [min(var_list), max(var_list)]
+    res = minimize(opt_func, min(var_list), method='Nelder-Mead')#, bounds=bnds)
 
     err_min = res.fun
-    nu_opt = res.x
+    var_opt = res.x
 
-    return err_min, nu_opt[0]
+    return err_min, var_opt[0]

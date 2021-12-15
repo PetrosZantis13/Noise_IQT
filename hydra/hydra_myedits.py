@@ -522,9 +522,12 @@ class MainWindow(QtWidgets.QMainWindow):
 #             interp_func = interp1d(self.var_list, err_tot, kind='linear')
 #             nu_min = self.sliderFixNu.value()*KHZ
 #             err_min = interp_func(nu_min)
-
+    
+        '''FIX LATER!'''
+        nu_min = nu_c  
+        
         if self.radioBtnOptFid.isChecked() :
-            err_min, nu_min = 0.5,0.5
+            err_min, var_min = em.optimizeFidelity(self.var_list, err_tot)
         else :
             interp_func = interp1d(self.var_list, err_tot, kind='linear')
             nu_min = self.sliderFixNu.value()*KHZ
