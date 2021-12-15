@@ -370,6 +370,9 @@ def compute_total_errors(*args) :
 # Optimize Fidelities
 # ------------------------------------------
 
+'''
+PETRO ALSO CHECK AND MODIFY THIS FUNCTION
+'''
 def optimizeFidelity(nu_c_list, err_list) :
     # Input : List of COM sec freqs and errors
     # Output : Minimum achievable fidelity and corresponding optimal secular freq

@@ -97,7 +97,7 @@ def plot_errors(*args):
         plt.xscale("log")
     elif(list_idx==14):
         plt.xticks([0,1])
-    plt.ylim(10**-3, 10**0)
+    plt.ylim(10**-4, 10**0)
     plt.legend()
     plt.show()
 

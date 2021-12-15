@@ -417,7 +417,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.graphWidget.plot([300], [1e-5])    # Purpose?
         
         if(self.graphXaxis>=3 and self.graphXaxis<=5 or self.graphXaxis==10):
-            self.graphWidget.setLogMode(True, True)
+            #self.graphWidget.setLogMode(True, True)
+            pass
         else:
             self.graphWidget.setLogMode(False, True)
 
@@ -437,6 +438,7 @@ class MainWindow(QtWidgets.QMainWindow):
             print("VarParam changed to " + str(varParam))
             # so now init graph depending on param, label accordingly etc etc
             # CLEAR PREVIOUS GRAPH
+            self.graphWidget.clear()
             self.init_graph()
 
         architecture = self.comboBoxArchitecture.currentIndex()
