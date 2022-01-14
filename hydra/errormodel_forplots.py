@@ -293,20 +293,18 @@ def compute_total_errors(*args) :
         # Calculate B-field PSD due to Current noise in CCWs
         SBi = dBdI(X_RESOLUTION_DAC, DIST_ELECTRODE)**2 * SA
 
-        #SBtot = SBa + SBv + SBi # Total B field noise = Voltage noise + Ambient noise + CCW current noise
-
-        SBtot = SBa + SBi + SBv
+        SBtot = SBa + SBv + SBi # Total B field noise = Voltage noise + Ambient noise + CCW current noise
 
         '''
         Petros' additions (following talk with Alex)
         '''
-        # SE = nuSE / nu_c
-        # if(g_factor!=0):
-        #     SBe = dBdV(nu_c, dzB, g_factor)**2 / g_factor**2 * SE
-        # else:
-        #     SBe = dBdV(nu_c, dzB, g_factor)**2 * SE
-        #
-        # SBtot += SBe
+        SE = nuSE / nu_c
+        if(g_factor!=0):
+            SBe = dBdV(nu_c, dzB, g_factor)**2 / g_factor**2 * SE
+        else:
+            SBe = dBdV(nu_c, dzB, g_factor)**2 * SE
+        
+        SBtot += SBe
 
 #         print("SBv = " + str(SBv))
 #         print("SBe = " + str(SBe) + "\n")
