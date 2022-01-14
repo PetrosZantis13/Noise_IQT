@@ -438,8 +438,6 @@ class MainWindow(QtWidgets.QMainWindow):
         if(varParam!=self.graphXaxis):            
             self.graphXaxis = varParam
             print("VarParam changed to " + str(varParam))
-            # so now init graph depending on param, label accordingly etc etc
-            # CLEAR PREVIOUS GRAPH
             self.graphWidget.clear()
             self.init_graph()
 
@@ -475,7 +473,7 @@ class MainWindow(QtWidgets.QMainWindow):
         '''
         Petros's slider edits
         '''
-        self.sliderVNoise.setValue(4* self.sliderENoise.value())  # check the exact relationship
+        #self.sliderVNoise.setValue(4* self.sliderENoise.value())  # check the exact relationship
         phi = self.sliderPhi.value()
         nu_c = 300*KHZ
 

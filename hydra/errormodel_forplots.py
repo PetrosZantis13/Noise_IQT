@@ -19,13 +19,13 @@ S_TO_P_LINEWIDTH = 19.6*MHZ # Linewidth of the S1/2 -> P1/2 transition in 171Yb
 DIST_ELECTRODE = 150e-6 # Assume typical distance to electrode for chips
 
 HEATING_FACTOR = 1/3 # 1/3 is typical for schemes such as the 2T MS gate or Phase modulated gates.
-                     
+
 GATE_TIME_COST = 1.25 # Increased gate time when using heating robust gates
 
-#G_FACTOR_CHIP = 50.10 # Geometric factor for voltage noise found by 
+#G_FACTOR_CHIP = 50.10 # Geometric factor for voltage noise found by
                       # numerically simulating chip geometries.
 
-G_FACTOR_CHIP = 70 # After talk with Sam 
+G_FACTOR_CHIP = 70 # After talk with Sam
 
 G_FACTOR_MACRO = 140
 
@@ -231,16 +231,16 @@ def compute_total_errors(*args) :
             as an argument and detect which one is the list we wish to loop over. This will be
             useful to produce plots of Infidelity over other variables (not just COM frequencies)
     '''
-    
+
     params = list(args)
     list_idx = 0
-    
+
     for i in range(0,len(params)):
         if(type(params[i]) == np.ndarray):
             list_idx = i
             #print("List is in position: " + str(list_idx))
-            variable_list = params[i]  
-        
+            variable_list = params[i]
+
     # Petro try to catch the exception when no list is provided, or wrong args format
 
     errors_h = [] # Heating errors
@@ -251,13 +251,13 @@ def compute_total_errors(*args) :
 
     # Loop over the variable list:
     for var in variable_list :
-        
+
         params[list_idx] = var  # fix the variable for this loop iteration
-        
+
         #nu_c_list
-        
+
         nu_c, dzB, Om, nuSE, SBa, SV, nu_XY, nbar, phi, chi, SA, sym_fluc, g_factor, pulse_shaping, vib_mode, dx = params
-        
+
         nu_s = np.sqrt(3) * nu_c
 
         eta_s = compute_eta(nu_s, dzB)
@@ -295,18 +295,18 @@ def compute_total_errors(*args) :
 
         #SBtot = SBa + SBv + SBi # Total B field noise = Voltage noise + Ambient noise + CCW current noise
 
-        SBtot = SBa + SBi
+        SBtot = SBa + SBi + SBv
 
         '''
         Petros' additions (following talk with Alex)
         '''
-        SE = nuSE / nu_c
-        if(g_factor!=0):
-            SBe = dBdV(nu_c, dzB, g_factor)**2 / g_factor**2 * SE
-        else:
-            SBe = dBdV(nu_c, dzB, g_factor)**2 * SE
-
-        SBtot += SBe
+        # SE = nuSE / nu_c
+        # if(g_factor!=0):
+        #     SBe = dBdV(nu_c, dzB, g_factor)**2 / g_factor**2 * SE
+        # else:
+        #     SBe = dBdV(nu_c, dzB, g_factor)**2 * SE
+        #
+        # SBtot += SBe
 
 #         print("SBv = " + str(SBv))
 #         print("SBe = " + str(SBe) + "\n")
