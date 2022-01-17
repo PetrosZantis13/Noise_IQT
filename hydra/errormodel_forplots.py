@@ -273,11 +273,18 @@ def compute_total_errors(*args) :
         #------------------------------
 
         # Compute STR mode heating rate
-
-        if vib_mode == VIB_MODE_AXIAL_STR :
-            ndot = ndot_STR(nu_c, nu_s, DIST_ELECTRODE, nuSE)
+        
+        SEv = g_factor**2 * SV
+        nuSEv = nu_c*SEv
+#         print("nuSE = " + str(nuSE))
+#         print("SV = " + str(SV))  
+#         print("SEv = " + str(SEv)) 
+#         print("nuSEv = " + str(nuSEv) + "\n") 
+        
+        if vib_mode == VIB_MODE_AXIAL_STR :            
+            ndot = ndot_STR(nu_c, nu_s, DIST_ELECTRODE, max(nuSE, nuSEv)) 
         elif vib_mode == VIB_MODE_AXIAL_COM :
-            ndot = ndot_COM(nu_c, nuSE)
+            ndot = ndot_COM(nu_c, max(nuSE, nuSEv))
 
         errors_h += [err_heating(ndot, eta, Om, HEATING_FACTOR)]
 
@@ -304,7 +311,7 @@ def compute_total_errors(*args) :
         else:
             SBe = dBdV(nu_c, dzB, g_factor)**2 * SE
         
-        SBtot += SBe
+        SBtot += SBe    # DONT SUM CHOOSE MAX?
 
 #         print("SBv = " + str(SBv))
 #         print("SBe = " + str(SBe) + "\n")

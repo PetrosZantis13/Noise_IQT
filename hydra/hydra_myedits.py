@@ -31,7 +31,7 @@ CBOX_ARCH_ID_CHIP = 0
 CBOX_ARCH_ID_MACRO = 1
 
 CBOX_VNOISE_ID_CORR = 0
-CBOX_VNOISE_ID_UNCORR = 0
+CBOX_VNOISE_ID_UNCORR = 1
 
 C1 = '#00478F'
 C2 = '#C34242'
@@ -442,17 +442,18 @@ class MainWindow(QtWidgets.QMainWindow):
             self.init_graph()
 
         architecture = self.comboBoxArchitecture.currentIndex()
-        if self.comboBoxVNoise.currentIndex() == CBOX_VNOISE_ID_CORR :
-            if architecture is CBOX_ARCH_ID_CHIP :
-                g_factor = em.G_FACTOR_CHIP
-            if architecture is CBOX_ARCH_ID_MACRO :
-                g_factor = em.G_FACTOR_MACRO
-        else :
-            g_factor = 0
+        
+        if architecture is CBOX_ARCH_ID_CHIP :
+            g_factor = em.G_FACTOR_CHIP
+        elif architecture is CBOX_ARCH_ID_MACRO :
+            g_factor = em.G_FACTOR_MACRO
             
-#         print(str(self.comboBoxVNoise.currentIndex()))
-#         print(str(g_factor))
-
+        if self.comboBoxVNoise.currentIndex() == CBOX_VNOISE_ID_CORR :
+            g_factor *= np.sqrt(12)  # eqn 4.22 Christophe's thesis
+            # en prepi na midenizete?
+        elif self.comboBoxVNoise.currentIndex() == CBOX_VNOISE_ID_UNCORR:
+            pass
+           
         vib_mode = self.comboBoxVibMode.currentIndex()
         include_amp_noise = self.radioBtnAmpNoise.isChecked()
         include_ccw_noise = self.radioBtnCCWNoise.isChecked()
