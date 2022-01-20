@@ -36,6 +36,7 @@ VIB_MODE_AXIAL_COM = 1
 VIB_MODE_RADIAL_STR = 2
 VIB_MODE_RADIAL_COM = 3
 
+COHERENCE_TIME = 0 # global for now, fix later
 
 # ------------------------------------------
 # General functions
@@ -282,9 +283,11 @@ def compute_total_errors(*args) :
 #         print("nuSEv = " + str(nuSEv) + "\n") 
         
         if vib_mode == VIB_MODE_AXIAL_STR :            
-            ndot = ndot_STR(nu_c, nu_s, DIST_ELECTRODE, max(nuSE, nuSEv)) 
+            ndot = ndot_STR(nu_c, nu_s, DIST_ELECTRODE, max(nuSE, nuSEv))  
+            # changed nuSE to max(), maybe eventually JUST nuSEv
         elif vib_mode == VIB_MODE_AXIAL_COM :
             ndot = ndot_COM(nu_c, max(nuSE, nuSEv))
+            # changed nuSE to max(), maybe eventually JUST nuSEv
 
         errors_h += [err_heating(ndot, eta, Om, HEATING_FACTOR)]
 
@@ -318,7 +321,9 @@ def compute_total_errors(*args) :
 
         # Compute decoherence time
         T2 = compute_T2(SBtot)
-
+        COHERENCE_TIME = T2
+        print("from em: " + str(COHERENCE_TIME))
+        
         errors_d += [err_decoherence(tgate, T2)]
 
         #------------------------------
@@ -361,7 +366,13 @@ def compute_total_errors(*args) :
     #------------------------------
     # Compute errors due to off-resonant coupling
     #------------------------------
-
+    
+    # PETRO check and fix this (i.e. takes the variable list but might not be applicable when not nu_c_list)
+    if pulse_shaping :
+        errors_o = err_offres_ps(Om, dzB, variable_list)
+    else :
+        errors_o = error_offres(Om, variable_list)
+        
 #     # Using pulse shaping or not?
 #     if pulse_shaping :
 #         errors_o = err_offres_ps(Om, dzB, nu_c_list)

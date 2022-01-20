@@ -35,4 +35,7 @@ def foo(*args):
 
 mystr = "Com frequency (eto)"
 
-print(mystr.split("(")) 
+#print(mystr.split("("))
+
+print(12/4/3) 
+print(12/(4*3)) 

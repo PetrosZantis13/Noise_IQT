@@ -74,9 +74,9 @@ class Trace:
     def updateErrors(self, errors):
         self.errors = errors
 
-    def updateTable(self, tgate = 0, varmin = 0, errmin = 1, ndot = 0) :
+    def updateTable(self, tgate = 0, varmin = 0, errmin = 1, T2 = 0, ndot = 0) :
         if self.update :
-            self.table = {"tgate" : tgate, "varmin" : varmin, "errmin" : errmin, "ndot" : ndot}
+            self.table = {"tgate" : tgate, "varmin" : varmin, "errmin" : errmin, "T2" : T2, "ndot" : ndot}
 
     def plotTrace(self, data_list, units) :
         if self.hide :
@@ -128,12 +128,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.radioBtnSymFluc.toggled.connect(lambda : self.toggle_symfluc_btn())
 
         # Innitialize Table Info
-        self.tableInfo.setRowCount(4)
+        self.tableInfo.setRowCount(5)
         self.tableInfo.setColumnCount(2)
         self.tableInfo.setItem(0,0, QtWidgets.QTableWidgetItem("Fidelity"))
         self.tableInfo.setItem(1,0, QtWidgets.QTableWidgetItem("Optimal Frequency"))
         self.tableInfo.setItem(2,0, QtWidgets.QTableWidgetItem("Gate Time"))
-        self.tableInfo.setItem(3,0, QtWidgets.QTableWidgetItem("STR Heating Rate"))
+        self.tableInfo.setItem(3,0, QtWidgets.QTableWidgetItem("Coherence Time"))
+        self.tableInfo.setItem(4,0, QtWidgets.QTableWidgetItem("STR Heating Rate"))
 
         # Innitialize combo boxes
         self.comboBoxArchitecture.currentIndexChanged.connect(lambda : self.update_graph())
@@ -304,12 +305,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
         return 0
 
-    def update_table(self, err_min, nu_min, tgate, ndot) :
+    def update_table(self, err_min, nu_min, tgate, T2, ndot) :
 
         self.tableInfo.setItem(0,1, QtWidgets.QTableWidgetItem('%.3f'%((1 - err_min)*100) + ' %'))
         self.tableInfo.setItem(1,1, QtWidgets.QTableWidgetItem('%.1f'%(nu_min/KHZ) + ' kHz'))
         self.tableInfo.setItem(2,1, QtWidgets.QTableWidgetItem('%.3f'%(tgate*1e3) + ' ms'))
-        self.tableInfo.setItem(3,1, QtWidgets.QTableWidgetItem('%.3f'%ndot))
+        self.tableInfo.setItem(3,1, QtWidgets.QTableWidgetItem('%.3f'%(T2*1e3)+ ' ms'))
+        self.tableInfo.setItem(4,1, QtWidgets.QTableWidgetItem('%.3f'%ndot + ' quanta/s'))
 
     def update_offres_radio(self) :
 
@@ -450,7 +452,10 @@ class MainWindow(QtWidgets.QMainWindow):
             
         if self.comboBoxVNoise.currentIndex() == CBOX_VNOISE_ID_CORR :
             g_factor *= np.sqrt(12)  # eqn 4.22 Christophe's thesis
-            # en prepi na midenizete?
+            '''
+            Electrode pairing is not included yet,
+            if yes, this should be divided by ~20
+            '''
         elif self.comboBoxVNoise.currentIndex() == CBOX_VNOISE_ID_UNCORR:
             pass
            
@@ -476,7 +481,7 @@ class MainWindow(QtWidgets.QMainWindow):
         '''
         #self.sliderVNoise.setValue(4* self.sliderENoise.value())  # check the exact relationship
         phi = self.sliderPhi.value()
-        nu_c = 300*KHZ
+        nu_c = 300*KHZ  # fix: make this a slider 
 
 
         if include_amp_noise :
@@ -534,6 +539,8 @@ class MainWindow(QtWidgets.QMainWindow):
             err_min = interp_func(nu_min)
 
         tgate = em.compute_tgate(nu_min, dzB, Om)
+        T2 = em.COHERENCE_TIME
+        print("from hydra: " + str(T2))
 
         if vib_mode is em.VIB_MODE_AXIAL_STR :
             ndot = em.ndot_STR(nu_min, nu_min*np.sqrt(3), em.DIST_ELECTRODE, nuSE)
@@ -543,11 +550,11 @@ class MainWindow(QtWidgets.QMainWindow):
             tgate = em.compute_tgate(nu_min, dzB, Om)
 
 
-        self.update_table(err_min, var_min, tgate, ndot)
+        self.update_table(err_min, var_min, tgate, T2, ndot)
 
         #self.opt_point.setData([nu_min/KHZ], [err_min])
 
-        self.traces[self.active_trace].updateTable(tgate = tgate, varmin = var_min, errmin = err_min, ndot = ndot)
+        self.traces[self.active_trace].updateTable(tgate = tgate, varmin = var_min, errmin = err_min, T2 = T2, ndot = ndot)
         self.traces[self.active_trace].updateErrors([err_h, err_d, err_t, err_o, err_a, err_tot])
         self.traces[self.active_trace].plotTrace(self.var_list, self.units)
 
