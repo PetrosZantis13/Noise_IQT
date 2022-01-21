@@ -16,7 +16,7 @@ MHZ = 2*np.pi*1e6
 ALPHA = 1/(4*np.pi*EPS0) * E**2/(HBAR * C)
 S_TO_P_LINEWIDTH = 19.6*MHZ # Linewidth of the S1/2 -> P1/2 transition in 171Yb
 
-DIST_ELECTRODE = 150e-6 # Assume typical distance to electrode for chips
+DIST_ELECTRODE = 125e-6 # Assume typical distance to electrode for chips
 
 HEATING_FACTOR = 1/3 # 1/3 is typical for schemes such as the 2T MS gate or Phase modulated gates.
 
@@ -253,11 +253,11 @@ def compute_total_errors(*args) :
     # Loop over the variable list:
     for var in variable_list :
 
-        params[list_idx] = var  # fix the variable for this loop iteration
+        params[list_idx] = var  # select the variable for this loop iteration
 
         #nu_c_list
 
-        nu_c, dzB, Om, nuSE, SBa, SV, nu_XY, nbar, phi, chi, SA, sym_fluc, g_factor, pulse_shaping, vib_mode, dx = params
+        nu_c, dzB, Om, nuSE, SBa, SV, nu_XY, nbar, phi, chi, SA, sym_fluc, g_factor, pulse_shaping, vib_mode = params
 
         nu_s = np.sqrt(3) * nu_c
 
@@ -321,8 +321,7 @@ def compute_total_errors(*args) :
 
         # Compute decoherence time
         T2 = compute_T2(SBtot)
-        COHERENCE_TIME = T2
-        print("from em: " + str(COHERENCE_TIME))
+        #print("Coherence time (only SB included): " + str(T2))
         
         errors_d += [err_decoherence(tgate, T2)]
 
