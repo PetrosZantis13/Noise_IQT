@@ -15,18 +15,18 @@ VERSION = '1.1'
 KHZ = 2*np.pi*1e3
 MHZ = 2*np.pi*1e6
 
-SLDR_ID_GRADIENT = 0
-SLDR_ID_POWER = 1
-SLDR_ID_ENOISE = 2
-SLDR_ID_BAMBIENT = 3
-SLDR_ID_VNOISE = 4
-SLDR_ID_NUXY = 5
-SLDR_ID_CHI = 6
-SLDR_ID_SA = 7
-SLDR_ID_NBAR = 8
-SLDR_ID_SYMFLUC = 9
-SLDR_ID_PHI = 10
-SLDR_ID_NUCOM = 11
+SLDR_ID_NUCOM = 0
+SLDR_ID_GRADIENT = 1
+SLDR_ID_POWER = 2
+SLDR_ID_ENOISE = 3
+SLDR_ID_BAMBIENT = 4
+SLDR_ID_VNOISE = 5
+SLDR_ID_NUXY = 6
+SLDR_ID_NBAR = 7
+SLDR_ID_PHI = 8
+SLDR_ID_CHI = 9
+SLDR_ID_SA = 10
+SLDR_ID_SYMFLUC = 11
 
 CBOX_ARCH_ID_CHIP = 0
 CBOX_ARCH_ID_MACRO = 1
@@ -314,6 +314,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.tableInfo.setItem(0,1, QtWidgets.QTableWidgetItem('%.3f'%((1 - err_min)*100) + ' %'))
         if(self.units==KHZ):
             self.tableInfo.setItem(1,1, QtWidgets.QTableWidgetItem('%.1f'%(var_min/KHZ) + ' kHz'))
+        elif(self.units==MHZ):
+            self.tableInfo.setItem(1,1, QtWidgets.QTableWidgetItem('%.1f'%(var_min/MHZ) + ' MHz'))
         else:
             self.tableInfo.setItem(1,1, QtWidgets.QTableWidgetItem('%.1f'%var_min))    
             
@@ -340,17 +342,17 @@ class MainWindow(QtWidgets.QMainWindow):
                      [[0.5, 2], [2, 2]],
                      [[4.5, 6], [8, 8]],
                      [[4.5, 6], [2, 2]],
-                     [[8.5, 10], [8, 8]]]
+                     [[8.8, 10.3], [2, 2]]]
 
         for pos, pen in zip(pos_list, self.get_pens(COLORS[0])) :
             self.legendWidget.plot(pos[0], pos[1], pen = pen)
 
-        label_names = ['Heating', 'Decoherence', 'Trap freq fluc', 'Off-res', 'Amp noise']
+        label_names = ['Heating', 'Decoherence', 'Trap frequency fluctuations', 'Off-res coupling', 'Amp noise']
         text_items = [pg.TextItem(name, (0, 0, 0), anchor = (0, 0.5)) for name in label_names]
 
         pos_list = [(2.3, 8), (2.3, 2),
                     (6.3, 8), (6.3, 2),
-                    (10.3, 8), (10.3, 2)]
+                    (10.5, 2), (10.3, 2)]
 
         for ti, pos in zip(text_items, pos_list) :
             ti.setPos(pos[0], pos[1])
@@ -383,18 +385,18 @@ class MainWindow(QtWidgets.QMainWindow):
         SV_list = np.logspace(-19, -12, 101)
         nuXY_list = np.linspace(1, 5, 101)*MHZ
         nbar_list = np.linspace(0, 10, 101)
-        phi_list = np.linspace(0, 10, 101)  # not sure
+        phi_list = np.linspace(1, 10, 10)  # not sure
         chi_list = np.linspace(0, 1, 101)
         
         self.var_lists = [nuCOM_list, dzB_list, Om_list, nuSE_list, SBa_list, SV_list, nuXY_list, 
              nbar_list, phi_list, chi_list]
         
         self.var_name_list = ["COM frequency (kHz)", "Magnetic field gradient (T/m)", "Gate Rabi frequency (kHz)",
-                 r'Scaled Electric field noise (V/m)$^2$', "Ambient Magnetic field noise (T$^2$/ Hz)", 
-                 "Voltage noise (V$^2$/ Hz)", "Radial mode frequency (MHz)", r"Initial temperature $\bar{n}$",                 
-                 r"Heating factor $\phi$", r"Amplitude signal-to-noise ratio $\chi$",
-                 "CCW current noise (A$^2$/ Hz)", r"Variance from voltage noise $\Delta$s",                 
-                 r"Geometric factor $(m^-1)$", "Pulse shaping",  "Vibrational mode (0 => Stretch, 1 => COM)", "dx"]
+                 r'Scaled Electric field noise (V/m)^2', "Ambient Magnetic field noise (T^2/ Hz)", 
+                 "Voltage noise (V^2/ Hz)", "Radial mode frequency (MHz)", r"Initial temperature nbar",                 
+                 r"Loops in phase space", r"Amplitude Signal-to-Noise Ratio",
+                 "CCW current noise (A^2/ Hz)", r"Variance from voltage noise ΔSV",                 
+                 r"Geometric factor (m^-1)", "Pulse shaping",  "Vibrational mode (0 => Stretch, 1 => COM)"]
 
     
     def init_graph(self):
@@ -445,7 +447,7 @@ class MainWindow(QtWidgets.QMainWindow):
         varParam = self.comboBoxVarParam.currentIndex()
         if(varParam!=self.graphXaxis):            
             self.graphXaxis = varParam
-            #print("VarParam changed to " + str(varParam))
+            print("VarParam changed to " + str(varParam))
             print("Variable Parameter changed to " + str(self.var_name_list[self.graphXaxis]))
             self.tableInfo.setItem(1,0, QtWidgets.QTableWidgetItem("Optimal " +
                 str(self.var_name_list[self.graphXaxis])))
@@ -491,7 +493,7 @@ class MainWindow(QtWidgets.QMainWindow):
         '''
         Petros's slider additions
         '''
-        phi = self.sliderPhi.value()
+        loops = self.sliderPhi.value()
         nu_c = self.sliderNuCOM.value() * KHZ
 
         if include_amp_noise :
@@ -506,7 +508,7 @@ class MainWindow(QtWidgets.QMainWindow):
             sym_fluc = 2*np.pi* self.sliderSymFluc.value()
         else : sym_fluc = 0
         
-        params = [nu_c, dzB, Om, nuSE, SBa, SV, NuXY, nbar, phi, chi, SA, sym_fluc, 
+        params = [nu_c, dzB, Om, nuSE, SBa, SV, NuXY, nbar, loops, chi, SA, sym_fluc, 
              g_factor, pulse_shaping, vib_mode]
 
         params[varParam] = self.var_lists[varParam]
@@ -516,9 +518,6 @@ class MainWindow(QtWidgets.QMainWindow):
             
         if inc_offres_err and show_offres: err_tot += err_o
         elif not show_offres : err_o = [0]*len(err_o)
-
-                    
-        nu_min = nu_c  
         
         '''
         Optimise the variable parameter for maximum fidelity (minimum error)
@@ -528,7 +527,10 @@ class MainWindow(QtWidgets.QMainWindow):
             err_min, var_min = em.optimizeFidelity(self.var_list, err_tot)
         else :   
             interp_func = interp1d(self.var_list, err_tot, kind='linear')
-            var_min = self.sliderFixNu.value()*KHZ  # MUST extract the correct slider
+            print(self.graphXaxis)
+            #var_min = self.sliderFixNu.value()*KHZ  # MUST extract the correct slider
+            var_min = self.get_slider_value(self.graphXaxis)
+            print("VarMin = " + str(var_min))
             err_min = interp_func(var_min)
             
         if varParam==0:
@@ -674,7 +676,48 @@ class MainWindow(QtWidgets.QMainWindow):
             self.labelNuCOM.setText(str(nuCOM) + ' kHz')
 
         self.update_graph()
+        
+    def get_slider_value(self, sldr_id = 0) :
+        
+        # FIX THE 10** POWERS
 
+        if sldr_id is SLDR_ID_GRADIENT :
+            value = self.sliderGradient.value()
+        
+        elif sldr_id is SLDR_ID_POWER :
+            value = self.sliderPower.value() *kHZ
+
+        elif sldr_id is SLDR_ID_ENOISE :
+            value = self.sliderENoise.value()
+
+        elif sldr_id is SLDR_ID_BAMBIENT :
+            value = self.sliderBAmbient.value()
+
+        elif sldr_id is SLDR_ID_VNOISE :
+            value = self.sliderVNoise.value()
+
+        elif sldr_id is SLDR_ID_NUXY :
+            value = self.sliderNuXY.value() *MHZ  
+
+        elif sldr_id is SLDR_ID_CHI :
+            value = self.sliderChi.value()
+
+        elif sldr_id is SLDR_ID_SA :
+            value = self.sliderSA.value()
+
+        elif sldr_id is SLDR_ID_NBAR :
+            value = self.sliderNbar.value()
+
+        elif sldr_id is SLDR_ID_SYMFLUC :
+            value = self.sliderSymFluc.value()
+            
+        elif sldr_id is SLDR_ID_PHI :
+            value = self.sliderPhi.value()
+        
+        elif sldr_id is SLDR_ID_NUCOM :
+            value = self.sliderNuCOM.value() *KHZ  
+        
+        return value
 
 def main():
     app = QtWidgets.QApplication(sys.argv)

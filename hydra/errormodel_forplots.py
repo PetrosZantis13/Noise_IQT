@@ -257,7 +257,7 @@ def compute_total_errors(*args) :
 
         #nu_c_list
 
-        nu_c, dzB, Om, nuSE, SBa, SV, nu_XY, nbar, phi, chi, SA, sym_fluc, g_factor, pulse_shaping, vib_mode = params
+        nu_c, dzB, Om, nuSE_anom, SBa, SV, nu_XY, nbar, loops, chi, SA, sym_fluc, g_factor, pulse_shaping, vib_mode = params
 
         nu_s = np.sqrt(3) * nu_c
 
@@ -275,22 +275,31 @@ def compute_total_errors(*args) :
 
         # Compute STR mode heating rate
         
+        '''
+        Petros' additions (following talk with Alex)
+        '''
+        #SE_anom = nuSE_anom / nu_c
         SEv = g_factor**2 * SV
-        nuSEv = nu_c*SEv
+        #nuSEv = nu_c*SEv
+        nuSE = nu_c*(SEv) + nuSE_anom
+        
 #         print("nuSE = " + str(nuSE))
 #         print("SV = " + str(SV))  
 #         print("SEv = " + str(SEv)) 
 #         print("nuSEv = " + str(nuSEv) + "\n") 
         
         if vib_mode == VIB_MODE_AXIAL_STR :            
-            ndot = ndot_STR(nu_c, nu_s, DIST_ELECTRODE, max(nuSE, nuSEv))  
+            ndot = ndot_STR(nu_c, nu_s, DIST_ELECTRODE, nuSE)  
             # changed nuSE to max(), maybe eventually JUST nuSEv
         elif vib_mode == VIB_MODE_AXIAL_COM :
-            ndot = ndot_COM(nu_c, max(nuSE, nuSEv))
+            ndot = ndot_COM(nu_c, nuSE)
             # changed nuSE to max(), maybe eventually JUST nuSEv
-
+            
+        HEATING_FACTOR = np.sqrt(loops)  # PETROS TEMPORARY ADDITION?
+        GATE_TIME_COST = HEATING_FACTOR
+        
         errors_h += [err_heating(ndot, eta, Om, HEATING_FACTOR)]
-
+        
         #------------------------------
         # Compute errors due to decoherence
         #------------------------------
@@ -308,13 +317,13 @@ def compute_total_errors(*args) :
         '''
         Petros' additions (following talk with Alex)
         '''
-        SE = nuSE / nu_c
+        SE_anom = nuSE_anom / nu_c
         if(g_factor!=0):
-            SBe = dBdV(nu_c, dzB, g_factor)**2 / g_factor**2 * SE
+            SB_anom = dBdV(nu_c, dzB, g_factor)**2 / g_factor**2 * SE_anom
         else:
-            SBe = dBdV(nu_c, dzB, g_factor)**2 * SE
+            SB_anom= dBdV(nu_c, dzB, 1)**2 * SE_anom
         
-        SBtot += SBe    # DONT SUM CHOOSE MAX?
+        SBtot += SB_anom    
 
 #         print("SBv = " + str(SBv))
 #         print("SBe = " + str(SBe) + "\n")

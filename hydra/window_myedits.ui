@@ -286,7 +286,7 @@
        <item>
         <widget class="QLabel" name="label_17">
          <property name="text">
-          <string>phi :</string>
+          <string>K :</string>
          </property>
         </widget>
        </item>
@@ -697,7 +697,7 @@
       </item>
       <item>
        <property name="text">
-        <string>phi</string>
+        <string>K</string>
        </property>
       </item>
       <item>
