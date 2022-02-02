@@ -320,7 +320,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.tableInfo.setItem(1,1, QtWidgets.QTableWidgetItem('%.1f'%var_min))    
             
         self.tableInfo.setItem(2,1, QtWidgets.QTableWidgetItem('%.3f'%(tgate*1e3) + ' ms'))
-        self.tableInfo.setItem(3,1, QtWidgets.QTableWidgetItem('%.3f'%(T2*1e3)+ ' ms'))
+        self.tableInfo.setItem(3,1, QtWidgets.QTableWidgetItem('%.3f'%(T2)+ ' s'))
         self.tableInfo.setItem(4,1, QtWidgets.QTableWidgetItem('%.3f'%ndot + ' quanta/s'))
 
     def update_offres_radio(self) :
@@ -385,7 +385,7 @@ class MainWindow(QtWidgets.QMainWindow):
         SV_list = np.logspace(-19, -12, 101)
         nuXY_list = np.linspace(1, 5, 101)*MHZ
         nbar_list = np.linspace(0, 10, 101)
-        phi_list = np.linspace(1, 10, 10)  # not sure
+        phi_list = np.linspace(1, 10, 10)  # depends if MTMS or Multi-Loop
         chi_list = np.linspace(0, 1, 101)
         
         self.var_lists = [nuCOM_list, dzB_list, Om_list, nuSE_list, SBa_list, SV_list, nuXY_list, 
@@ -417,7 +417,7 @@ class MainWindow(QtWidgets.QMainWindow):
 #         self.graphWidget.plot([self.NU_C_LIST[0]/KHZ, self.NU_C_LIST[-1]/KHZ], [1e-4, 1e-4], pen=pg.mkPen('#666666', width=1, style=QtCore.Qt.DashLine))
         
         self.graphWidget.plot([self.var_list[0]/self.units, self.var_list[-1]/self.units], [1e-2, 1e-2], pen=pg.mkPen('#666666', width=1, style=QtCore.Qt.DashLine))
-        self.graphWidget.plot([self.var_list[0]/self.units, self.var_list[-1]/self.units], [1e-4, 1e-4], pen=pg.mkPen('#666666', width=1, style=QtCore.Qt.DashLine))
+        self.graphWidget.plot([self.var_list[0]/self.units, self.var_list[-1]/self.units], [1e-3, 1e-3], pen=pg.mkPen('#666666', width=1, style=QtCore.Qt.DashLine))
 
 
         self.traces[0].curves = [self.graphWidget.plot([0], [0], pen=pen) for pen in self.get_pens(COLORS[0])]
@@ -527,8 +527,6 @@ class MainWindow(QtWidgets.QMainWindow):
             err_min, var_min = em.optimizeFidelity(self.var_list, err_tot)
         else :   
             interp_func = interp1d(self.var_list, err_tot, kind='linear')
-            print(self.graphXaxis)
-            #var_min = self.sliderFixNu.value()*KHZ  # MUST extract the correct slider
             var_min = self.get_slider_value(self.graphXaxis)
             print("VarMin = " + str(var_min))
             err_min = interp_func(var_min)
@@ -539,21 +537,24 @@ class MainWindow(QtWidgets.QMainWindow):
             dzB = var_min
         elif varParam==2:
             Om = var_min
-           
-        tgate = em.compute_tgate(nu_c, dzB, Om)
-        #T2 = -tgate/ np.log(1- err_min)
-#         print(err_min)
-        T2 = em.compute_T2(err_min)
-        #print(T2)
+        
+        gate_cost = np.sqrt(loops)           
+        
         
         if vib_mode is em.VIB_MODE_AXIAL_STR :
             ndot = em.ndot_STR(nu_c, nu_c*np.sqrt(3), em.DIST_ELECTRODE, nuSE)
-            tgate = em.compute_tgate(nu_c*np.sqrt(3), dzB, Om)
+            tgate = em.compute_tgate(nu_c*np.sqrt(3), dzB, Om, gate_cost)
+            
         elif vib_mode is em.VIB_MODE_AXIAL_COM :
             ndot = em.ndot_COM(nu_c, nuSE)
-            tgate = em.compute_tgate(nu_c, dzB, Om)
-
-
+            tgate = em.compute_tgate(nu_c, dzB, Om, gate_cost)
+            
+        
+        SBtot = em.SB(nu_c, dzB, g_factor, nuSE, SBa, SV, SA)
+        
+        # Compute the optimised Coherence time
+        T2 = em.compute_T2(SBtot)
+        
         self.update_table(err_min, var_min, tgate, T2, ndot)
 
         self.traces[self.active_trace].updateTable(tgate = tgate, varmin = var_min, errmin = err_min, T2 = T2, ndot = ndot)

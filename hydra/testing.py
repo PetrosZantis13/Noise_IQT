@@ -1,6 +1,9 @@
 import numpy as np
-print("from eclipse")
+from sympy import Symbol
+from sympy.solvers import solve
+import time
 
+print("from eclipse")
 print("from atom")
 
 
@@ -37,5 +40,62 @@ mystr = "Com frequency (eto)"
 
 #print(mystr.split("("))
 
-print(12/4/3) 
-print(12/(4*3)) 
+def multiTone(tones):
+    
+    t1= time.time()
+    
+    if tones==1:
+        return 1
+    
+    l = Symbol('l')
+    sum = 0
+    
+    for j in range(1, tones+1):
+        sum += 1/(1-(j*l)) 
+        
+    solutions = solve(sum,l)
+    
+    cs = np.zeros( (len(solutions), tones) )
+    Rs = np.zeros( len(solutions) )
+    
+    for i in range( len(solutions)):
+    
+        sol = solutions[i]
+        #print("\nWith lambda= " + str(sol) + ",")
+        
+        b=0
+        for j in range(1, tones+1):
+            b += j/(1-j*sol)**2
+        
+        b = -(1/4)* b**(-1/2)    
+        Rheat = 0
+        
+        #print("\nThe cs are:")
+        for j in range(1, tones+1):
+            c = 4*j*b / (1-j*sol)
+            Rheat += c**2 / j**2
+            #print( float(c) )
+            cs[i,j-1] = c
+        
+        Rheat = float(Rheat/2)
+        Rs[i] = Rheat
+        #print("\nand Rheat = " + str(Rheat))   
+    
+    # find the best solution which corresponds to the lower Rheat
+    min_idx = np.argmin(Rs)
+    cs_min = cs[min_idx]
+    R_min = Rs[min_idx]
+    
+#     for j in range(1, tones+1):
+#         np.exp()
+    #print(np.sum(np.abs(cs)))
+    
+    t2 = time.time()
+    print("For " + str(tones)+ " tones the calculation took: " + str(t2-t1) + " seconds")
+    return R_min
+
+for i in range(1,10):
+    print(multiTone(i))  
+    
+    
+    
