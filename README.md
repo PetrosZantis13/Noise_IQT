@@ -34,5 +34,5 @@ Updates from me (Petros Zantis) on the original (Christophe Valahu) HYDRA includ
 • Drop-down list to change the variable parameter (horizontal axis).  
 • Expected coherence time added to the results table.  
 • Option to simulate multi-tone and multi-loop MS gates. (new 'K' parameter)  
-• Refined some equations (e.g. 1/3 factor in decoherence infidelity) 
+• Refined some equations (e.g. 1/3 factor in decoherence infidelity)  
 • Effect of electrode pairing added, if voltage noise on the electrodes is assumed to be correlated.  
