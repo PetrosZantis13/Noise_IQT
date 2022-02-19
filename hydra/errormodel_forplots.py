@@ -61,7 +61,7 @@ def ndot_COM(nu, nuSE) :
 
 def ndot_STR(nu_c, nu, d, nuSE) :
     # nu_c : COM mode frequency
-    # nu : target frequency
+    # nu : STR mode frequency
     # d : ion-electrode distance
     # nuSE : scaled E-field noise density
 
