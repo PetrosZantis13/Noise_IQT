@@ -22,7 +22,8 @@ Simply download the zip of the latest version, extract it, and run the executabl
 
 ## 2. Documentation 
 
-Inside the docs folder one can find two pdfs:
+There are two pdf files inside the docs folder: HYDRA Error Model Documentation (previous version).pdf AND Presentation+Results.pdf
+
 
 ## 3. Miscellaneous
 
