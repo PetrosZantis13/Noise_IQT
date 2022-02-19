@@ -1,1 +1,1 @@
-![](./Hydra screenshot.png)
+![](Hydra screenshot.png)
