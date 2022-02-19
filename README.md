@@ -2,7 +2,7 @@
 
 "For every head chopped off, the Hydra would regrow two." - For every noise source eliminated, two more pop up.
 
-HYDRA is a software which visualises the error models for two-qubit microwave gates using trapped ions in a static magnetic field gradient. 
+*HYDRA is a software which visualises the error models for two-qubit microwave gates using trapped ions in a static magnetic field gradient.*
 
 • Perfect calibration of experimental parameters is assumed (no mis-set errors).  
 • Allows the option to choose the variable parameter (horizontal axis) and optimise it for minimising errors (maximising fidelity).  
