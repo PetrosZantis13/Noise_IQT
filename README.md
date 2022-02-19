@@ -3,10 +3,11 @@
 "For every head chopped off, the Hydra would regrow two." - For every noise source eliminated, two more pop up.
 
 HYDRA is a software which visualises the error models for two-qubit microwave gates using trapped ions in a static magnetic field gradient. 
-Perfect calibration of experimental parameters is assumed (no mis-set errors).
-Allows the option to choose the variable parameter (horizontal axis) and optimise it for minimising errors (maximising fidelity).
-Calculates maximum achievable fidelity due to inherent noise/error mechanisms.
-Also calculates expected heating rate, gate time and coherence time.
+
+• Perfect calibration of experimental parameters is assumed (no mis-set errors).  
+• Allows the option to choose the variable parameter (horizontal axis) and optimise it for minimising errors (maximising fidelity).  
+• Calculates maximum achievable fidelity due to inherent noise/error mechanisms.  
+• Also calculates expected heating rate, gate time and coherence time.  
 
 
 ## 1. Installation 
@@ -26,14 +27,13 @@ Click the following link : https://imperial-college-of-london-hydra.readthedocs-
 
 ## 3. Miscellaneous
 
-Version history : 
+This software was adapted with permission from https://github.com/christophevalahu/hydra.git
 
-  - 1.1 : Added amplitude noise, CCW noise, and trap frequency (symmetric detuning) noise. Added temperature dependence to kerr coupling and trap frequency noise.
-		  Cleaned up legend.
-  - 1.0 : First stable release. Plotting heating, decoherence, kerr and offres errors. Can support up to four traces. Can save and load files. 
+Updates from me (Petros Zantis) on the original (Christophe Valahu) HYDRA include:
 
-To do : 
-  
-  - Complete HELP section
-  - Refine off-resonant coupling error model with pulse-shaping.
-  - Add radial STR and COM vibrational modes
+• Distinct colour coding of error plots.  
+• Drop-down list to change the variable parameter (horizontal axis).  
+• Expected coherence time added to the results table.  
+• Option to simulate multi-tone and multi-loop MS gates. (new 'K' parameter)  
+• Refined some equations (e.g. 1/3 factor in decoherence infidelity) 
+• Effect of electrode pairing added, if voltage noise on the electrodes is assumed to be correlated.  
