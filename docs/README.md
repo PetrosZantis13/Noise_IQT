@@ -1,6 +1,6 @@
 
-![](Presentation+Results/Slide1.png)
-![](Presentation+Results/Slide2.png)
+![](Presentation+Results/Slide1.PNG)
+![](Presentation+Results/Slide2.PNG)
 ![](Presentation+Results/Slide3.png)
 ![](Presentation+Results/Slide4.png)
 ![](Presentation+Results/Slide5.png)
