@@ -8,6 +8,7 @@ import json
 from scipy.interpolate import griddata, interp1d
 
 VERSION = '1.1'
+os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
 
 KHZ = 2*np.pi*1e3
 MHZ = 2*np.pi*1e6

@@ -4,15 +4,16 @@
 	{
 	    "dzB" : 50,
 	    "Om" : 50,
-	    "nuSE" : -4,
-	    "SBa" : -23,
-	    "SV" : -16,
+	    "nuSE" : -5,
+	    "SBa" : -22,
+	    "SV" : -17,
 	    "nuXY" : 1.5,
 		"chi" : -1.8,
 		"SA" : -12,
 		"nbar" : -1,
 		"symfluc" : 3,
-		"phi" : 1
+		"phi" : 1,
+		"nuCOM" : 300
 	},
 	"toggles" : 
 	{
