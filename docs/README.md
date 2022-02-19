@@ -1,1 +1,1 @@
-![](./HYDRA Error Model (Presentation + Results).pdf)
+![](./Hydra screenshot.png)
