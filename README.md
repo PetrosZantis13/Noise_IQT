@@ -42,3 +42,5 @@ Updates from me (Petros Zantis) on the original (Christophe Valahu) HYDRA includ
 • Option to simulate multi-tone and multi-loop MS gates. (new 'K' parameter)  
 • Refined some equations (e.g. 1/3 factor in decoherence infidelity)  
 • Effect of electrode pairing added, if voltage noise on the electrodes is assumed to be correlated.  
+
+![](Presentation+Results/Slide3.PNG)
