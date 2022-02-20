@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import errormodel_forplots as em
-#import errormodel_myedits as em   # for backup
+import errormodel as em
 
 plt.rcParams['figure.figsize'] = (8, 6)
 plt.rcParams['font.size'] = 11

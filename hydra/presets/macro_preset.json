@@ -12,7 +12,8 @@
 		"SA" : -12,
 		"nbar" : -1,
 		"symfluc" : 3,
-		"phi" : 1
+		"phi" : 1,
+		"nuCOM" : 300
 	},
 	"toggles" : 
 	{

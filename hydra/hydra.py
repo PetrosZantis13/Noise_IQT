@@ -3,8 +3,7 @@ from pyqtgraph import PlotWidget, TextItem
 import pyqtgraph as pg
 import sys, os
 import numpy as np
-#import errormodel_myedits as em    for backup
-import errormodel_forplots as em
+import errormodel as em
 import json
 from scipy.interpolate import griddata, interp1d
 
@@ -54,7 +53,7 @@ with open(CHIP_PRESET_FILE) as json_file:
 with open(MACRO_PRESET_FILE) as json_file:
     MACRO_PRESET_DATA = json.load(json_file)
 
-WINDOW_UI_FILE = resource_path('window_myedits.ui')
+WINDOW_UI_FILE = resource_path('window.ui')
 
 class Trace:
 
@@ -208,7 +207,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def save_preset_file(self) :
 
-        filename = QtGui.QFileDialog.getSaveFileName(self, 'Save File', '', '*.json')[0]
+        filename = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File', '', '*.json')[0]
 
         try :
             preset_data = self.save_presets()
@@ -221,16 +220,16 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
     def load_preset_file(self) :
-        filename = QtGui.QFileDialog.getOpenFileName(self, 'Load File', '', '*.json')[0]
-
+        filename = QtWidgets.QFileDialog.getOpenFileName(self, 'Load File', '', '*.json')[0]
+            
         try :
             with open(filename) as f:
                 preset_data = json.load(f)
-
+             
             self.load_presets(preset_data)
-
+ 
         except :
-            print('Error : Load preset file failed')
+            print('Error : Load presets from file failed')
 
 
     def save_presets(self) :
@@ -245,6 +244,8 @@ class MainWindow(QtWidgets.QMainWindow):
         SA = self.sliderSA.value()/10
         nbar = self.sliderNbar.value()/10
         sym_fluc = self.sliderSymFluc.value()
+        loops = self.sliderPhi.value()
+        nu_c = self.sliderNuCOM.value() 
 
         arch = self.comboBoxArchitecture.currentIndex()
         vnoise = self.comboBoxVNoise.currentIndex()
@@ -257,7 +258,7 @@ class MainWindow(QtWidgets.QMainWindow):
         return {"version" : VERSION,
                 "slider" : { "dzB" : dzB, "Om" : Om, "nuSE" : nuSE, "SBa" : SBa,
                              "SV" : SV, "nuXY" : nuXY, 'chi' : chi, 'SA' : SA,
-                             'nbar' : nbar, 'symfluc' : sym_fluc},
+                             'nbar' : nbar, 'symfluc' : sym_fluc, 'phi' : loops, 'nuCOM' : nu_c},
                 "toggles" : {'amp_noise' : toggle_amp_noise, 'ccw_noise' : toggle_ccw_noise, 'sym_fluc' : toggle_sym_fluc},
                 "architecture" : arch,"vnoise" : vnoise,"vib_mode" : vmode}
 
@@ -365,17 +366,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.legendWidget.getPlotItem().hideAxis('left')
     
     def init_param_lists(self):
-        
-#         self.NU_C_LIST = np.linspace(100, 800, 100)*KHZ
-#         self.dzB_list = np.linspace(1, 150, 151)
-#         self.Om_list = np.linspace(1, 150, 151)*KHZ
-#         self.nuSE_list = np.logspace(-8, -3, 101)
-#         self.SBa_list = np.logspace(-25, -19, 101)
-#         self.SV_list = np.logspace(-19, -12, 101)
-#         self.nuXY_list = np.linspace(1, 5, 101)*MHZ
-#         self.nbar_list = np.linspace(0, 10, 101)
-#         self.phi_list = np.linspace(0, 10, 101)  # not sure
-#         self.chi_list = np.linspace(0, 1, 101)
 
         nuCOM_list = np.linspace(100, 800, 101)*KHZ
         dzB_list = np.linspace(1, 150, 150)
@@ -447,7 +437,7 @@ class MainWindow(QtWidgets.QMainWindow):
         varParam = self.comboBoxVarParam.currentIndex()
         if(varParam!=self.graphXaxis):            
             self.graphXaxis = varParam
-            print("VarParam changed to " + str(varParam))
+            #print("VarParam changed to " + str(varParam))
             print("Variable Parameter changed to " + str(self.var_name_list[self.graphXaxis]))
             self.tableInfo.setItem(1,0, QtWidgets.QTableWidgetItem("Optimal " +
                 str(self.var_name_list[self.graphXaxis])))
@@ -464,13 +454,12 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.comboBoxVNoise.currentIndex() == CBOX_VNOISE_ID_CORR :
             # g_factor *= np.sqrt(12)  # eqn 4.22 Christophe's thesis (this is WITHOUT electrode pairing)
             '''
-            Electrode pairing was not included yet,
-            if yes, this should be divided by ~20 (talk to Alex)
+            The effect of electrode pairing (numerically simulated by Alex to reduce g by ~20)
             '''
-            # the effect of electrode pairing (numerically simulated by Alex, maybe derive analytical solution later)
             g_factor *= 1/20
             
         elif self.comboBoxVNoise.currentIndex() == CBOX_VNOISE_ID_UNCORR:
+            # if electrode noise is uncorrelated, pairing has no effect
             pass
            
         vib_mode = self.comboBoxVibMode.currentIndex()
@@ -489,10 +478,6 @@ class MainWindow(QtWidgets.QMainWindow):
         SV = 10**(self.sliderVNoise.value()/10)
         NuXY = self.sliderNuXY.value()/10*MHZ
         nbar = 10**(self.sliderNbar.value()/10)
-        
-        '''
-        Petros's slider additions
-        '''
         loops = self.sliderPhi.value()
         nu_c = self.sliderNuCOM.value() * KHZ
 
@@ -521,6 +506,7 @@ class MainWindow(QtWidgets.QMainWindow):
         
         '''
         Optimise the variable parameter for maximum fidelity (minimum error)
+        and calculate the new optimised heating rate, gate time and coherence time
         '''
         
         if self.radioBtnOptFid.isChecked() :
@@ -528,18 +514,30 @@ class MainWindow(QtWidgets.QMainWindow):
         else :   
             interp_func = interp1d(self.var_list, err_tot, kind='linear')
             var_min = self.get_slider_value(self.graphXaxis)
-            print("VarMin = " + str(var_min))
+            #print("VarMin = " + str(var_min))
             err_min = interp_func(var_min)
             
-        if varParam==0:
-            nu_c = var_min
-        elif varParam==1:
-            dzB = var_min
-        elif varParam==2:
-            Om = var_min
+        ''' CHECK IF THESE WORK!'''
+#         if varParam==0:
+#             nu_c = var_min
+#         elif varParam==1:
+#             dzB = var_min
+#         elif varParam==2:
+#             Om = var_min
+#         elif varParam==3:
+#             nuSE = var_min
+#         elif varParam==4:
+#             SBa = var_min
+#         elif varParam==5:
+#             SV = var_min
+#         elif varParam==6:
+#             NuXY = var_min
+#         elif varParam==7:
+#             nbar = var_min
+#         elif varParam==8:
+#             loops = var_min
         
-        gate_cost = np.sqrt(loops)           
-        
+        gate_cost = np.sqrt(loops)        
         
         if vib_mode is em.VIB_MODE_AXIAL_STR :
             ndot = em.ndot_STR(nu_c, nu_c*np.sqrt(3), em.DIST_ELECTRODE, nuSE)
@@ -549,10 +547,8 @@ class MainWindow(QtWidgets.QMainWindow):
             ndot = em.ndot_COM(nu_c, nuSE)
             tgate = em.compute_tgate(nu_c, dzB, Om, gate_cost)
             
-        
         SBtot = em.SB(nu_c, dzB, g_factor, nuSE, SBa, SV, SA)
         
-        # Compute the optimised Coherence time
         T2 = em.compute_T2(SBtot)
         
         self.update_table(err_min, var_min, tgate, T2, ndot)
@@ -679,35 +675,33 @@ class MainWindow(QtWidgets.QMainWindow):
         self.update_graph()
         
     def get_slider_value(self, sldr_id = 0) :
-        
-        # FIX THE 10** POWERS
 
         if sldr_id is SLDR_ID_GRADIENT :
             value = self.sliderGradient.value()
         
         elif sldr_id is SLDR_ID_POWER :
-            value = self.sliderPower.value() *kHZ
+            value = self.sliderPower.value() *KHZ
 
         elif sldr_id is SLDR_ID_ENOISE :
-            value = self.sliderENoise.value()
+            value = 10**(self.sliderENoise.value()/10)
 
         elif sldr_id is SLDR_ID_BAMBIENT :
-            value = self.sliderBAmbient.value()
+            value = 10**(self.sliderBAmbient.value()/10)
 
         elif sldr_id is SLDR_ID_VNOISE :
-            value = self.sliderVNoise.value()
+            value = 10**(self.sliderVNoise.value()/10)
 
         elif sldr_id is SLDR_ID_NUXY :
-            value = self.sliderNuXY.value() *MHZ  
+            value = self.sliderNuXY.value()/10 *MHZ  
 
         elif sldr_id is SLDR_ID_CHI :
-            value = self.sliderChi.value()
+            value = 10**(self.sliderChi.value()/10)
 
         elif sldr_id is SLDR_ID_SA :
-            value = self.sliderSA.value()
+            value = 10**(self.sliderSA.value()/10)
 
         elif sldr_id is SLDR_ID_NBAR :
-            value = self.sliderNbar.value()
+            value = 10**(self.sliderNbar.value()/10)
 
         elif sldr_id is SLDR_ID_SYMFLUC :
             value = self.sliderSymFluc.value()

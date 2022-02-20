@@ -28,17 +28,12 @@ def foo(*args):
                 
         print(a,b,c,d,e)
         
-    
-    
     print("end\n")
 
 # foo(3.0, 45, np.linspace(0,3,4), 4, 5)
 # 
 # foo(3.0, 45, 4, 5, np.linspace(0,3,4))
 
-mystr = "Com frequency (eto)"
-
-#print(mystr.split("("))
 
 def multiTone(tones):
     
@@ -96,6 +91,5 @@ def multiTone(tones):
 
 for i in range(1,10):
     print(multiTone(i))  
-    
-    
+
     
