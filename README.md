@@ -22,9 +22,12 @@ Simply download the zip of the latest version, extract it, and run the executabl
 
 ## 2. Documentation 
 
-There are two pdf files inside the docs folder: 
-• HYDRA Error Model Documentation (previous version).pdf  (CHANGE THE NAME TO Documentation_previous.pdf) (previous version of the documentation, included for completeness)
-• Presentation+Results.pdf (the slides are displayed in the docs/README.md file)
+There are two pdf files inside the docs folder:   
+
+1) Presentation+Results.pdf (A presentation on HYDRA and some preliminary results obtained using the program. The slides are displayed in the docs/README.md file)  
+
+2) Documentation_previous.pdf (previous version of the documentation, included for completeness)
+
 
 
 ## 3. Miscellaneous
