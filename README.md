@@ -26,7 +26,7 @@ There are two pdf files inside the docs folder:
 
 1) Presentation+Results.pdf (A presentation on HYDRA and some preliminary results obtained using the program. The slides are displayed in the docs/README.md file)  
 
-2) Documentation_previous.pdf (A previous version of the documentation explaining some derivations and included for completeness.)
+2) Documentation_previous.pdf (A previous version of the documentation explaining the error model derivations; included for completeness.)
 
 
 
