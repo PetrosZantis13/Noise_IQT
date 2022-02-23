@@ -41,7 +41,6 @@ COLORS = [C1, C2, C3, C4, 'k']
 
 def resource_path(relative_path):
     bundle_dir = getattr(sys, '_MEIPASS', os.path.abspath(os.path.dirname(__file__)))
-    # bundle_dir = r"C:\Users\Petros Laptop\Downloads\PROGRAMMING\Noise_IQT\hydra" # TEMPORARY
     path_to_dat = os.path.abspath(os.path.join(bundle_dir, relative_path))
     return path_to_dat
 

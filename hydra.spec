@@ -3,11 +3,13 @@
 
 block_cipher = None
 
+added_files = [( './hydra/*', '.' ),( './hydra/presets/*', 'presets' )]
+
 
 a = Analysis(['hydra\\hydra.py'],
              pathex=[],
              binaries=[],
-             datas=[],
+             datas=added_files,
              hiddenimports=[],
              hookspath=[],
              hooksconfig={},
@@ -24,9 +26,9 @@ exe = EXE(pyz,
           a.scripts,
           a.binaries,
           a.zipfiles,
-          a.datas,  
+          a.datas,
           [],
-          name='hydra',
+          name='hydra-v1.2',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
