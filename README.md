@@ -17,14 +17,14 @@ There are two ways to run the program:
 1) Compiling the python code : Clone the Github repository and in a python environment run "python hydra/hydra.py"
 
 2) Running the executable : The repository is precompiled, and the executable is available for download here: 
-   https://github.com/PetrosZantis13/Noise_IQT/blob/316a71bd9ad2953101b3852910d5259c84a74b4c/dist/hydra.exe
+   https://github.com/PetrosZantis13/Noise_IQT/tree/master/dist
 
    Simply download the application and run the executable file called "hydra.exe".
 
 
 ## 2. Documentation 
 
-There are two pdf files inside the docs folder:   
+There are two pdf files inside the docs folder (https://github.com/PetrosZantis13/Noise_IQT/tree/master/docs):   
 
 1) Presentation+Results.pdf (A presentation on HYDRA and some preliminary results obtained using the program. The slides are displayed in the docs/README.md file)  
 
