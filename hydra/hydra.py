@@ -9,7 +9,7 @@ from scipy.interpolate import griddata, interp1d
 
 os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
 
-VERSION = '1.1'
+VERSION = '1.2'
 
 KHZ = 2*np.pi*1e3
 MHZ = 2*np.pi*1e6
