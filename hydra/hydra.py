@@ -61,7 +61,6 @@ class Trace:
 
     curves = []
     errors = []
-    #NU_C_LIST = np.linspace(100, 800, 100)*KHZ
     hide = False
     update = False
     active = False
@@ -100,7 +99,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         #Load the UI Page
         uic.loadUi(WINDOW_UI_FILE, self)
-        self.setWindowTitle("Hydra - Petro's edits")
+        self.setWindowTitle("Hydra - v1.2")
 
         # Innitialize Traces
         self.active_trace = 0
@@ -113,11 +112,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.radioBtnTraceHide.toggled.connect(lambda : self.trace_hide() )
 
         # Innitialize  Graph
-        #self.NU_C_LIST = np.linspace(100, 800, 100)*KHZ
         self.init_param_lists()
         self.init_graph()
 
-        # Innitialize all slider and their labels
+        # Innitialize all slider and their labels        
         self.init_sliders()
 
         # Innitialize Radio buttons
@@ -128,6 +126,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.radioBtnAmpNoise.toggled.connect(lambda : self.toggle_ampnoise_btn())
         self.radioBtnCCWNoise.toggled.connect(lambda : self.toggle_ccwnoise_btn())
         self.radioBtnSymFluc.toggled.connect(lambda : self.toggle_symfluc_btn())
+        self.radioBtnMTMS.toggled.connect(lambda : self.toggle_MTMS())
 
         # Innitialize Table Info
         self.tableInfo.setRowCount(5)
@@ -206,6 +205,21 @@ class MainWindow(QtWidgets.QMainWindow):
     def toggle_symfluc_btn(self) :
         self.sliderSymFluc.setEnabled(self.radioBtnSymFluc.isChecked())
         self.update_graph()
+        
+    def toggle_MTMS(self) :
+    
+        if(self.radioBtnMTMS.isChecked()):
+            self.label_17.setText('Tones :')
+            self.var_name_list[8] = r'Tones'
+
+        else:
+            self.label_17.setText('Loops :')
+            self.var_name_list[8] = r"Loops in phase space"
+        
+        if(self.graphXaxis == 8):
+            self.change_var_param(8)
+            
+        self.update_graph()
 
     def save_preset_file(self) :
 
@@ -256,12 +270,14 @@ class MainWindow(QtWidgets.QMainWindow):
         toggle_amp_noise = self.radioBtnAmpNoise.isChecked()
         toggle_ccw_noise = self.radioBtnCCWNoise.isChecked()
         toggle_sym_fluc = self.radioBtnSymFluc.isChecked()
+        toggle_MTMS = self.radioBtnMTMS.isChecked()
 
         return {"version" : VERSION,
                 "slider" : { "dzB" : dzB, "Om" : Om, "nuSE" : nuSE, "SBa" : SBa,
                              "SV" : SV, "nuXY" : nuXY, 'chi' : chi, 'SA' : SA,
                              'nbar' : nbar, 'symfluc' : sym_fluc, 'phi' : loops, 'nuCOM' : nu_c},
-                "toggles" : {'amp_noise' : toggle_amp_noise, 'ccw_noise' : toggle_ccw_noise, 'sym_fluc' : toggle_sym_fluc},
+                "toggles" : {'amp_noise' : toggle_amp_noise, 'ccw_noise' : toggle_ccw_noise, 
+                             'sym_fluc' : toggle_sym_fluc, 'MTMS' : toggle_MTMS},
                 "architecture" : arch,"vnoise" : vnoise,"vib_mode" : vmode}
 
     def load_presets(self, data) :
@@ -309,6 +325,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.radioBtnAmpNoise.setChecked(data['toggles']['amp_noise'])
         self.radioBtnCCWNoise.setChecked(data['toggles']['ccw_noise'])
         self.radioBtnSymFluc.setChecked(data['toggles']['sym_fluc'])
+        self.radioBtnMTMS.setChecked(data['toggles']['MTMS'])
 
         return 0
 
@@ -432,19 +449,23 @@ class MainWindow(QtWidgets.QMainWindow):
         self.graphWidget.setLabel('bottom', self.var_name_list[self.graphXaxis])
         #self.graphWidget.setXRange(100, 820, padding=0)
         self.graphWidget.setYRange(-4, 0, padding=0.02)
-
+    
+    def change_var_param(self, varParam):
+        
+        self.graphXaxis = varParam
+        #print("VarParam changed to " + str(varParam))
+        print("Variable Parameter changed to " + str(self.var_name_list[self.graphXaxis]))
+        self.tableInfo.setItem(1,0, QtWidgets.QTableWidgetItem("Optimal " +
+            str(self.var_name_list[self.graphXaxis])))
+        self.graphWidget.clear()
+        self.init_graph()
+        
 
     def update_graph(self) :
-
+        
         varParam = self.comboBoxVarParam.currentIndex()
         if(varParam!=self.graphXaxis):
-            self.graphXaxis = varParam
-            #print("VarParam changed to " + str(varParam))
-            print("Variable Parameter changed to " + str(self.var_name_list[self.graphXaxis]))
-            self.tableInfo.setItem(1,0, QtWidgets.QTableWidgetItem("Optimal " +
-                str(self.var_name_list[self.graphXaxis])))
-            self.graphWidget.clear()
-            self.init_graph()
+            self.change_var_param(varParam)
 
         architecture = self.comboBoxArchitecture.currentIndex()
 
@@ -468,10 +489,11 @@ class MainWindow(QtWidgets.QMainWindow):
         include_amp_noise = self.radioBtnAmpNoise.isChecked()
         include_ccw_noise = self.radioBtnCCWNoise.isChecked()
         include_symfluc_noise = self.radioBtnSymFluc.isChecked()
-
+        
         show_offres = self.radioBtnShowOffRes.isChecked()
         inc_offres_err = self.radioBtnIncludeOffErr.isChecked()
         pulse_shaping = self.radioBtnPulseShaping.isChecked() and show_offres
+        MTMS = self.radioBtnMTMS.isChecked()
 
         dzB = self.sliderGradient.value()
         Om = self.sliderPower.value() * KHZ
@@ -494,9 +516,9 @@ class MainWindow(QtWidgets.QMainWindow):
         if include_symfluc_noise :
             sym_fluc = 2*np.pi* self.sliderSymFluc.value()
         else : sym_fluc = 0
-
+                
         params = [nu_c, dzB, Om, nuSE, SBa, SV, NuXY, nbar, loops, chi, SA, sym_fluc,
-             g_factor, pulse_shaping, vib_mode]
+             g_factor, pulse_shaping, vib_mode, MTMS]
 
         params[varParam] = self.var_lists[varParam]
 

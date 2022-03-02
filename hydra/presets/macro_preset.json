@@ -19,7 +19,8 @@
 	{
 		"amp_noise" : true, 
 		"ccw_noise" : false, 
-		"sym_fluc" : true
+		"sym_fluc" : true,
+		"MTMS" : false
 	},
 	"architecture" : 1,
 	"vnoise" : 0,
