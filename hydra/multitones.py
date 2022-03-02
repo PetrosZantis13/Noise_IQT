@@ -3,42 +3,14 @@ from sympy import Symbol
 from sympy.solvers import solve
 import time
 
-print("Testing custom functions:")
+# ------------------------------------------
+# Other MS Schemes (Multi-Tone)
+# ------------------------------------------
 
-print("from eclipse")
-print("from atom")
-
-def foo(*args):
-    
-    params = list(args)
-    list_idx = 0
-    
-    #print( [type(args[i]) for i in range(0,len(args))] )
-    for i in range(0,len(params)):
-#         print(type(args[i]))
-#         print(type(args[i]) == np.ndarray)
-        if(type(params[i]) == np.ndarray):
-            list_idx = i
-            print("List is in position: " + str(list_idx))
-            varlist = params[i]    
-    
-    
-    for var in varlist:   # do with zip
-        params[list_idx] = var 
-        a, b, c, d, e = params
-                
-        print(a,b,c,d,e)
-        
-    print("end\n")
-
-# foo(3.0, 45, np.linspace(0,3,4), 4, 5)
-# 
-# foo(3.0, 45, 4, 5, np.linspace(0,3,4))
-
-
-def multiTone(tones):
-    
-    t1= time.time()
+def calc_Rheat(tones):
+    '''
+    Calculates analytically the reduced heating factors when using multi-tone MS gates.
+    '''
     
     if tones==1:
         return 1
@@ -81,14 +53,24 @@ def multiTone(tones):
     min_idx = np.argmin(Rs)
     cs_min = cs[min_idx]
     R_min = Rs[min_idx]
-    
-#     for j in range(1, tones+1):
-#         np.exp()
-    #print(np.sum(np.abs(cs)))
-    
-    t2 = time.time()
-    print("For " + str(tones)+ " tones the calculation took: " + str(t2-t1) + " seconds")
+
     return R_min
 
-
+def multitone(max):
+    '''
+    Can be used if one wants to investigate the effects of using Multi-Tone MS gates (MTMS).
+    Returns the reduced heating factors corresponding to the number of tones used in MTMS.
+    Might take a few seconds to calculate.
+    '''
     
+    multiTones = []
+    print("Calculating Multi-Tone heating factors...")    
+    for tone in range(1,max+1):
+        print("for " + str(tone) + " tones")
+        multiTones.append(calc_Rheat(tone))
+    
+    print("Done!\nThe reduced heating factors are:") 
+    print(multiTones)
+    return multiTones
+
+multitone(10)       # Used this to include the Rheats into the errormodel.

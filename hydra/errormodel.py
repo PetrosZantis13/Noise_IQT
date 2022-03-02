@@ -21,14 +21,14 @@ S_TO_P_LINEWIDTH = 19.6*MHZ # Linewidth of the S1/2 -> P1/2 transition in 171Yb
 
 DIST_ELECTRODE = 125e-6 # Assume typical distance to electrode for chips
 
-HEATING_FACTOR = 1/3 # 1/3 is typical for schemes such as the 2T MS gate or Phase modulated gates.
+# The reduced heating factors corresponding to the number of tones used in MTMS, calculated using multitones.py
+MTMS_HEATING_FACTORS = [1, 0.3333333333333334, 0.19399769056505103, 0.1381966011250105, 0.1076557707245477, 0.0882854632139036, 0.07487229497835066, 0.0650218331787828, 0.05747536033446576, 0.05150632602262713]
 
-GATE_TIME_COST = 1.25 # Increased gate time when using heating robust gates
+#GATE_TIME_COST = 1.25 # Increased gate time when using heating robust gates
 
-#G_FACTOR_CHIP = 50.10 # Geometric factor for voltage noise found by
-                     # numerically simulating chip geometries.
+#G_FACTOR_CHIP = 50.10 # Geometric factor for voltage noise found by numerically simulating chip geometries.
 
-G_FACTOR_CHIP = 70 # Incoherent sum of electrodes.
+G_FACTOR_CHIP = 70 # Incoherent sum of electrodes on current chips.
 
 G_FACTOR_MACRO = 140
 
@@ -243,67 +243,6 @@ def err_amp_noise(tgate, noise) :
     return 1 - np.exp(-tgate * noise * omega_dd**2 / 2)
 
 # ------------------------------------------
-# Other MS Schemes (Multi-Tone)
-# ------------------------------------------
-
-def multiTone(tones):
-    # Calculates analytically the reduced heating factors when using multi-tone MS gates
-    
-    if tones==1:
-        return 1
-    
-    l = Symbol('l')
-    sum = 0
-    
-    for j in range(1, tones+1):
-        sum += 1/(1-(j*l)) 
-        
-    solutions = solve(sum,l)
-    
-    cs = np.zeros( (len(solutions), tones) )
-    Rs = np.zeros( len(solutions) )
-    
-    for i in range( len(solutions)):
-    
-        sol = solutions[i]
-        #print("\nWith lambda= " + str(sol) + ",")
-        
-        b=0
-        for j in range(1, tones+1):
-            b += j/(1-j*sol)**2
-        
-        b = -(1/4)* b**(-1/2)    
-        Rheat = 0
-        
-        #print("\nThe cs are:")
-        for j in range(1, tones+1):
-            c = 4*j*b / (1-j*sol)
-            Rheat += c**2 / j**2
-            #print( float(c) )
-            cs[i,j-1] = c
-        
-        Rheat = float(Rheat/2)
-        Rs[i] = Rheat
-        #print("\nand Rheat = " + str(Rheat))   
-    
-    # find the best solution which corresponds to the lower Rheat
-    min_idx = np.argmin(Rs)
-    cs_min = cs[min_idx]
-    R_min = Rs[min_idx]
-
-    return R_min
-
-'''
-The following is commented out due to computational delay, but can be included if one
-wants to investigate the effects of using Multi-Tone MS gates (MTMS).
-'''
-# MULTITONES = []
-# for tone in range(1,11):
-#     MULTITONES.append(multiTone(tone))
-#  
-# print(MULTITONES)
-
-# ------------------------------------------
 # Total Errors
 # ------------------------------------------
 
@@ -345,7 +284,7 @@ def compute_total_errors(*args) :
 
         #nu_c_list
 
-        nu_c, dzB, Om, nuSE_anom, SBa, SV, nu_XY, nbar, loops, chi, SA, sym_fluc, g_factor, pulse_shaping, vib_mode = params
+        nu_c, dzB, Om, nuSE_anom, SBa, SV, nu_XY, nbar, loops, chi, SA, sym_fluc, g_factor, pulse_shaping, vib_mode, MTMS = params
 
         nu_s = np.sqrt(3) * nu_c
 
@@ -379,11 +318,14 @@ def compute_total_errors(*args) :
         elif vib_mode == VIB_MODE_AXIAL_COM :
             ndot = ndot_COM(nu_c, nuSE)
         
-        # Multi-Loop MS    
-        HEATING_FACTOR = np.sqrt(loops)  # A higher HEATING_FACTOR reduces the heating rate (& heating errors)
+        if(not MTMS):          
+            # Multi-Loop MS    
+            HEATING_FACTOR = np.sqrt(loops)  # A higher HEATING_FACTOR reduces the heating rate (& heating errors)
+        else:
+            # Multi-Tone MS  
+            HEATING_FACTOR = 1/MTMS_HEATING_FACTORS[int(loops)-1]   # Rheat corresponding to the number of tones used in MTMS
+        
         GATE_TIME_COST = np.sqrt(loops)  # GATE_TIME_COST is the tradeoff for using MTMS, MLMS or PM gates. 
-        # Multi-Tone MS  
-        #HEATING_FACTOR = 1/MULTITONES[int(loops)-1]    # comment out if MTMS is used
         
         errors_h += [err_heating(ndot, eta, Om, HEATING_FACTOR)]
         

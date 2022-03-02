@@ -5,7 +5,7 @@ import errormodel as em
 plt.rcParams['figure.figsize'] = (8, 6)
 plt.rcParams['font.size'] = 11
 
-print("Let's plot!")
+print("Test file to vary the horizontal axis of the plot.")
 
 KHZ = 2*np.pi*1e3
 MHZ = 2*np.pi*1e6
