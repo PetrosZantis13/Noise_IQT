@@ -580,6 +580,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.traces[self.active_trace].updateTable(tgate = tgate, varmin = var_min, errmin = err_min, T2 = T2, ndot = ndot)
         self.traces[self.active_trace].updateErrors([err_h, err_d, err_t, err_o, err_a, err_tot])
         self.traces[self.active_trace].plotTrace(self.var_list, self.units)
+        
+        #print("At this optimum, Lamb-Dicke ^2 = " + str(em.compute_eta(nu_c, dzB)**2) )
 
 
     def init_sliders(self) :
