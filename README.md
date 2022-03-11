@@ -10,16 +10,18 @@ HYDRA is a software which visualises the error models for two-qubit microwave ga
 • Also calculates expected heating rate, gate time and coherence time.  
 
 
+
 ## 1. Installation 
 
 There are two ways to run the program: 
 
-1) Compiling the python code : Clone the Github repository and in a python environment run "python hydra/hydra.py"
-
-2) Running the executable : The repository is precompiled, and the executable is available for download here: 
+1) Running the executable : The repository is precompiled, and the executable is available for download here: 
    https://github.com/PetrosZantis13/Noise_IQT/blob/master/dist/hydra-v1.2.exe
 
    Simply download the application and run the executable file called "hydra.exe".
+
+2) Compiling the python code : Clone the Github repository and in a python environment run "python hydra/hydra.py"
+
 
 
 ## 2. Documentation 
