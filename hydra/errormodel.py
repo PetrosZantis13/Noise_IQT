@@ -70,6 +70,22 @@ def ndot_STR(nu_c, nu, d, nuSE) :
     dz = 2/2**(2/3) * (E**2/(4*np.pi*EPS0*M*nu_c**2))**(1/3)
     return E**2/(4*M * HBAR * nu**2) * nuSE / d**2 * dz**2
 
+def MTMS_factors(MTMS, loops):
+    # MTMS boolean value
+    # loops: number of loops in phase space or tones in MTMS
+    
+    if(not MTMS):          
+        # Multi-Loop MS    
+        HEATING_FACTOR = np.sqrt(loops)  # A higher HEATING_FACTOR reduces the heating rate (& heating errors)
+    else:
+        # Multi-Tone MS  
+        HEATING_FACTOR = 1/MTMS_HEATING_FACTORS[int(loops)-1]   # Rheat corresponding to the number of tones used in MTMS
+    
+    GATE_TIME_COST = np.sqrt(loops)  # GATE_TIME_COST is the tradeoff for using MTMS, MLMS or PM gates. 
+    
+    return HEATING_FACTOR, GATE_TIME_COST
+
+
 # ------------------------------------------
 # Decoherence Errors
 # ------------------------------------------
@@ -318,14 +334,7 @@ def compute_total_errors(*args) :
         elif vib_mode == VIB_MODE_AXIAL_COM :
             ndot = ndot_COM(nu_c, nuSE)
         
-        if(not MTMS):          
-            # Multi-Loop MS    
-            HEATING_FACTOR = np.sqrt(loops)  # A higher HEATING_FACTOR reduces the heating rate (& heating errors)
-        else:
-            # Multi-Tone MS  
-            HEATING_FACTOR = 1/MTMS_HEATING_FACTORS[int(loops)-1]   # Rheat corresponding to the number of tones used in MTMS
-        
-        GATE_TIME_COST = np.sqrt(loops)  # GATE_TIME_COST is the tradeoff for using MTMS, MLMS or PM gates. 
+        HEATING_FACTOR, GATE_TIME_COST = MTMS_factors(MTMS, loops)
         
         errors_h += [err_heating(ndot, eta, Om, HEATING_FACTOR)]
         

@@ -561,14 +561,14 @@ class MainWindow(QtWidgets.QMainWindow):
         elif varParam==8:
             loops = var_min
 
-        gate_cost = np.sqrt(loops)
+        heat_factor, gate_cost = em.MTMS_factors(MTMS, loops)
 
         if vib_mode is em.VIB_MODE_AXIAL_STR :
-            ndot = em.ndot_STR(nu_c, nu_c*np.sqrt(3), em.DIST_ELECTRODE, nuSE)
+            ndot = em.ndot_STR(nu_c, nu_c*np.sqrt(3), em.DIST_ELECTRODE, nuSE) /heat_factor
             tgate = em.compute_tgate(nu_c*np.sqrt(3), dzB, Om, gate_cost)
 
         elif vib_mode is em.VIB_MODE_AXIAL_COM :
-            ndot = em.ndot_COM(nu_c, nuSE)
+            ndot = em.ndot_COM(nu_c, nuSE) /heat_factor
             tgate = em.compute_tgate(nu_c, dzB, Om, gate_cost)
 
         SBtot = em.SB(nu_c, dzB, g_factor, nuSE, SBa, SV, SA)
