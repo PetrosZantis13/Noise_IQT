@@ -1,7 +1,11 @@
 import numpy as np
 from sympy import Symbol
 from sympy.solvers import solve
+import matplotlib.pyplot as plt
+import os
 import time
+plt.rcParams['figure.figsize'] = (12, 5)
+plt.rcParams['font.size'] = 9
 
 print("Testing custom functions:")
 
@@ -90,5 +94,30 @@ def multiTone(tones):
     print("For " + str(tones)+ " tones the calculation took: " + str(t2-t1) + " seconds")
     return R_min
 
-
+def add_delay(list, fract):
+    '''
+    list: the list of functions you want to mirror
+    fract: the delay you want to add given as a fraction of the size of the original functions
+    '''
     
+    newV = []    
+    plt.subplot(1, 2, 1)
+    plt.plot(list)
+    
+    for funct in list.T:
+        delay = np.ones(int(fract*funct.size)) * funct[-1]
+        newFunct = np.concatenate((funct,delay,funct[::-1]))
+        newV.append(newFunct)
+    
+    newV = np.array(newV)
+    plt.subplot(1, 2, 2)
+    plt.plot(newV.T)
+    plt.show()
+    return newV
+
+
+V = np.loadtxt("C:/Users/Petros Laptop/Downloads/Eustace_Junction_Straight_WE_33_ramp_T20220321-120702.csv",dtype=float,delimiter=",")
+# xs = np.linspace(1,10,100)
+# logistic = 1/(1+ 50*np.exp(-xs))
+# #logistic = xs
+add_delay(V, 0.5)    
